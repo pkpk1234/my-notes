@@ -38,5 +38,60 @@ NIOServer在进行selector循环之前，输出server started日志。
 
 ![](/assets/serverstarted)
 
-此时执行telnet 127.0.0.1 8989连接本地8989端口，可以发现连接上的是nc，如下 ：![](/assets/telnet-nc)关闭nc，再次
+此时执行telnet 127.0.0.1 8989连接本地8989端口，可以发现连接上的是nc，如下 ：![](/assets/telnet-nc)关闭nc，再次telnet 127.0.0.1 8989，此时会连接NIOServer，如下：
+
+![](/assets/telnet-nioserver)
+
+综上，即重现了上面说的问题。
+
+## 解决方法
+
+使用Socket连接本地8989端口，如果发现连接成功，则说明端口已经被占用，抛出异常即可。
+
+```java
+/**
+     * 检查端口是否已经被占用
+     *
+     * @param port
+     * @return
+     */
+    private static boolean isPortBinded(int port) {
+        boolean isBinded = false;
+        Socket sc = new Socket();
+        try {
+            //连接本地端口，设置半秒超时
+            sc.connect(new InetSocketAddress(InetAddress.getByName("127.0.0.1"), port), 500);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //判断是否成功连接
+            if (sc.isConnected()) {
+                isBinded = true;
+            }
+            try {
+                sc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return isBinded;
+    }
+```
+
+修改代码，添加检查
+
+```java
+public class NIOServerWithBindCheck {
+    public static void main(String[] args) throws IOException {
+        int port = 8989;
+        if (isPortBinded(port)) {
+            throw new IOException("server port " + port + "is already binded");
+        }
+        ServerSocketChannel serverSocketChannel = null;
+        ... ...省略 ... ...
+```
+
+
 
