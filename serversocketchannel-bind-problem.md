@@ -93,5 +93,9 @@ public class NIOServerWithBindCheck {
         ... ...省略 ... ...
 ```
 
+效果如下：
 
+![](/assets/nioserver-with-bind-check)
+
+完整代码：https://github.com/pkpk1234/ServerSocketChannel-bind-problem
 
