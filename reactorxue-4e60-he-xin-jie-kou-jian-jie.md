@@ -9,7 +9,7 @@ reactive streams标准核心接口有四个：
 * Subscription
 * Processor&lt;T,R&gt;
 
-Reactor实现了这四类接口，其中最重要的接口为Publisher，代表了一个响应式的流。
+其中最重要的接口为Publisher，代表了一个响应式的流。
 
 Publisher核心实现为Flux和Mono。
 
