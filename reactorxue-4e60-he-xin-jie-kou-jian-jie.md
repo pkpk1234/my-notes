@@ -5,7 +5,10 @@ Reactor项目核心为reactor-core，一个基于Java8的响应式流标准实�
 reactive streams标准核心接口有四个：
 
 * Publisher&lt;T&gt;
-* 
+* Subscriber&lt;T&gt;
+* Subscription
+* Processor&lt;T,R&gt;
+
 Publisher核心实现为Flux和Mono。
 
 Flux代表了一个可以返回0..N个元素的响应式流。
