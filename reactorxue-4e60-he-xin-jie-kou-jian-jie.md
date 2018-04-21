@@ -9,7 +9,7 @@ reactive streams标准核心接口有四个：
 * Subscription
 * Processor&lt;T,R&gt;
 
-Reactor实现了这四类接口，其中最重要的接口为Publisher。
+Reactor实现了这四类接口，其中最重要的接口为Publisher，代表了一个响应式的流。
 
 Publisher核心实现为Flux和Mono。
 
@@ -30,6 +30,4 @@ Mono&lt;T&gt; 也是标准的Publisher&lt;T&gt;的实现，代表了一个可以
 该流接收到onComplete时返回一个元素并结束，接收到onError信号时返回0个元素并结束。
 
 Mono可以用于表示无数据返回的异步流程，如等同于Runnable的概念，此时可以使用Mono&lt;Void&gt;。
-
-
 
