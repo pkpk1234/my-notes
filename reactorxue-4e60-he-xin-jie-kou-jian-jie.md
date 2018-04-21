@@ -9,6 +9,8 @@ reactive streams标准核心接口有四个：
 * Subscription
 * Processor&lt;T,R&gt;
 
+Reactor实现了这四类接口。
+
 Publisher核心实现为Flux和Mono。
 
 Flux代表了一个可以返回0..N个元素的响应式流。
