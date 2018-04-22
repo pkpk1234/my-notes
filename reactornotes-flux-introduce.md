@@ -17,3 +17,25 @@
 
 每个大类下又可以继续分出更细的分类。
 
+### Publisher最基本特点
+
+无论是Flux或者Mono还是其他的Publisher实现，都有一个相同的基本特点，就是在subscribe方法调用之前，绝对不会进行运算。
+
+### 最简单的Flux例子
+
+最简单的Flux可以使用静态工厂方法just\(T ... elements\)构造出来，然后使用subscribe\(Consumer&lt;? super T&gt; consumer\)让流启动，并使用consumer进行消费。如下：
+
+```java
+public class FluxSubscriber {
+    public static void main(String[] args) {
+        Flux<String> stringFlow = Flux.just("one", "two", "three");
+
+        //subscribe with consumer
+        System.out.println("example for subscribe with consumer");
+        stringFlow.subscribe(System.out::println);
+    }
+}
+```
+
+运行以上的代码，程序会异常输出one、tow、three。
+
