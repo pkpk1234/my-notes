@@ -1,6 +1,6 @@
 # Reactor学习--Flux常用的静态工厂方法
 
-Flux静态工厂方法超过七十个，比较常用大致又可以分为如下几类：
+Flux静态工厂方法超过七十个，绝大部分都是使用现有的数据源构造Flux数据流，比较常用大致又可以分为如下几类：
 
 1. 使用可变长参数构造
 2. 使用数组构造
@@ -36,8 +36,4 @@ fromArray方法使用接收到数组构造Flux流，实际上just\(T ...t\)中�
 ### fromIterable方法
 
 fromIteratble方法使用接收到的Iterable对象构造Flux流，数据返回的顺序和Iterable的next方法返回数据的顺序一致。
-
-
-
-
 
