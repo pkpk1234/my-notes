@@ -79,5 +79,73 @@ public class Range {
 
 输出如下：
 
+![](/assets/range.png)
+
+### 特殊流
+
+empty方法返回一个没有任何数据、异常的流。
+
+error方法返回一个没有任何数据，只有异常的流程。
+
+never方法返回一个不会发送任何通知额流程。
+
+这三个流都会触发Subscriber的onSubscribe回调，都不会触发onNext回调。同时empty流会触发onComplete回调，error流会触发onError回调。never方法只触发Subscriber的onSubscribe回调，不会触发其他任何回调。
+
+```java
+public class SpecialFactory {
+    public static void main(String[] args) {
+        Subscriber subscriber = new Subscriber() {
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                System.out.println("onSubscribe");
+                subscription.request(1);
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("onNext value is " + o);
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("onError exception message is " + throwable.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("onComplete");
+            }
+        };
+        System.out.println("start empty---------");
+        Flux.empty().subscribe(subscriber);
+
+        System.out.println("start error---------");
+        Flux.error(new RuntimeException("my exception")).subscribe(subscriber);
+
+        System.out.println("start never---------");
+        Flux.never().subscribe(subscriber);
+    }
+}
+
+```
+
+输出如下：
+
+```
+start empty---------
+onSubscribe
+onComplete
+start error---------
+onSubscribe
+onError exception message is my exception
+start never---------
+onSubscribe
+```
+
+
+
+
+
 
 
