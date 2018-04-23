@@ -127,7 +127,6 @@ public class SpecialFactory {
         Flux.never().subscribe(subscriber);
     }
 }
-
 ```
 
 输出如下：
@@ -145,7 +144,5 @@ onSubscribe
 
 
 
-
-
-
+Flux中还包含一些高级 静态工厂，下一节再继续。
 
