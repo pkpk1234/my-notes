@@ -64,5 +64,20 @@ public class FromStream {
 }
 ```
 
+### range方法
+
+range\(int start, int count\)构造了一个Flux&lt;Integer&gt;流，返回从 \[start,start+count\) 区间的整数。如果该方法有类似于range\(int start, int step,int count\)的重载就更完美了。注意，range方法会处理整数溢出的场景，在溢出时抛出异常。
+
+```java
+public class Range {
+    public static void main(String[] args) {
+        Flux.range(1, 5).subscribe(System.out::println);
+        Flux.range(Integer.MAX_VALUE, 5).subscribe(System.out::println);
+    }
+}
+```
+
+输出如下
+
 
 
