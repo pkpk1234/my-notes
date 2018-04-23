@@ -53,6 +53,17 @@ public class FromIterable {
 
 Flux数据流同样可以使用java.util.stream.Stream对象构造出来，数据返回的顺序和Stream.iterator\(\)方法返回的Iterable对象的next方法返回数据的顺序一致。
 
+```java
+public class FromStream {
+    public static void main(String[] args) {
+        SortedMap<String, Charset> charSetMap = Charset.availableCharsets();
+        Stream<String> charSetStream = charSetMap.keySet().stream();
+        Flux<String> charsetFlux = Flux.fromStream(charSetStream);
+        charsetFlux.subscribe(System.out::println);
+    }
+}
+```
+
 
 
 
