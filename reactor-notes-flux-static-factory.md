@@ -49,5 +49,11 @@ public class FromIterable {
 }
 ```
 
+### fromSteam方法
+
+Flux数据流同样可以使用java.util.stream.Stream对象构造出来，数据返回的顺序和Stream.iterator\(\)方法返回的Iterable对象的next方法返回数据的顺序一致。
+
+
+
 
 
