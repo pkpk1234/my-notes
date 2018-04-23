@@ -35,5 +35,19 @@ fromArray方法使用接收到数组构造Flux流，实际上just\(T ...t\)中�
 
 ### fromIterable方法
 
-fromIteratble方法使用接收到的Iterable对象构造Flux流，数据返回的顺序和Iterable的next方法返回数据的顺序一致。
+fromIteratble方法使用接收到的Iterable对象构造Flux流，数据返回的顺序和Iterable的next方法返回数据的顺序一致。如下例子中使用fromIteratble构造了JVM支持的字符集的Flux流。
+
+```java
+public class FromIterable {
+    public static void main(String[] args) {
+        SortedMap<String, Charset> charSetMap = Charset.availableCharsets();
+        Iterable<String> iterable = charSetMap.keySet();
+
+        Flux<String> charsetFlux = Flux.fromIterable(iterable);
+        charsetFlux.subscribe(System.out::println);
+    }
+}
+```
+
+
 
