@@ -29,7 +29,9 @@ public class FluxSubscriber {
 
 ### fromArray方法
 
-fromArray方法使用接收到数组构造Flux流，实际上just\(T ...t\)中接收到变长参数后，如果参数数组长度大于1，就调用fromArray进行构造的。
+fromArray方法使用接收到数组构造Flux流，实际上just\(T ...t\)中接收到变长参数后，如果参数数组长度大于1，就调用fromArray进行构造的。即 Flux.just\("one", "two", "three"\); 实际上就是 Flux.fromArray\({"one", "two", "three"}\);
+
+
 
 
 
