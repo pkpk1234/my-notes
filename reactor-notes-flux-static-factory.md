@@ -35,6 +35,8 @@ fromArray方法使用接收到数组构造Flux流，实际上just\(T ...t\)中�
 
 ### fromIterable方法
 
+fromIteratble方法使用接收到的Iterable对象构造Flux流，数据返回的顺序和Iterable的next方法返回数据的顺序一致。
+
 
 
 
