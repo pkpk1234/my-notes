@@ -4,7 +4,10 @@
 
 这些静态工厂方法又可以细分为如下几类：
 
-1. Concat
-
+1. 接收多个已有Flux，将其组合为一个Flux。concat、merge
+2. create方法，将已有的异步事件流，包装为Flux流
+3. 接收一个Publisher，将其包装为Flux流。
+4. 接收一个Supplier，延迟构造Publisher。
+5. 6. 
 
 
