@@ -8,6 +8,7 @@
 2. create方法，将已有的异步事件流，包装为Flux流
 3. 接收一个Publisher，将其包装为Flux流。
 4. 接收一个Supplier，延迟构造Publisher。
-5. 6. 
+5. 构造一个周期性产生Long序列的Flux。
+
 
 
