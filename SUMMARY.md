@@ -6,4 +6,5 @@
 * [Reactor学习--核心接口简介](reactorxue-4e60-he-xin-jie-kou-jian-jie.md)
 * [Reactor学习--Flux接口简介](reactornotes-flux-introduce.md)
 * [Reactor学习--Flux静态工厂方法](reactor-notes-flux-static-factory.md)
+* [Reactor学习--Flux高级静态工厂](reactor-notes-advance-static-factory-methods.md)
 
