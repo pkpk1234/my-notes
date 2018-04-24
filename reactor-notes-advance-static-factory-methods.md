@@ -12,6 +12,48 @@
 
 ### interval方法
 
+interval方法周期性生成从0开始的的Long。周期从delay之后启动，每隔period时间返回一个加1后的Long。
+
+注意，interval方法返回的Flux运行在另外的线程中，main线程需要休眠或者阻塞之后才能看到周期性的输出。如下：
+
+```java
+public class Interval {
+    public static void main(String[] args) throws InterruptedException {
+        Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(1)).subscribe(System.out::println);
+        Thread.sleep(5000);
+    }
+}
+```
+
+运行之后输出如下：
+
+![](/assets/interval.png)
+
+### from\(Publisher&lt;? extends T&gt; source\)方法
+
+将已有的Publisher包装为一个Flux流。如下例子将已有的Flux和Mono包装为Flux。
+
+```java
+public class FromPublisher {
+    public static void main(String[] args) {
+        Publisher<Integer> fluxPublisher = Flux.just(1, 2, 3);
+        Publisher<Integer> monoPublisher = Mono.just(0);
+
+        System.out.println("Flux from flux");
+        Flux.from(fluxPublisher).subscribe(System.out::println);
+
+        System.out.println("Flux from mono");
+        Flux.from(monoPublisher).subscribe(System.out::println);
+    }
+}
+```
+
+### defer方法
+
+
+
+
+
 
 
 ![](/assets/mergedFlux.png)
