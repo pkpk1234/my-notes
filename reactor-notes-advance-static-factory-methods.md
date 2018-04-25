@@ -224,36 +224,7 @@ public class ScheduledSingleListenerEventProcessor implements MyEventProcessor {
 
 ![](/assets/create.png)
 
-### publishOn方法和subscribeOn方法
-
-这两个方法都可以将程序执行的线程切换到传入的Scheduler上。区别是publishOn会让之后的操作在Scheduler提供的线程中执行，subscribeOn会让之前的操作在Scheduler提供的线程中执行。
-
-如下例子中，在publishOn之前执行了map操作，之后执行subscribe操作。
-
-```java
-public class FluxPublishOnThreadSwitch {
-
-    public static void main(String[] args) throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        Flux.range(1, 20)
-                .map(i -> {
-                    System.out.println("map in Thread " + Thread.currentThread().getName() +" value is " + i);
-                    return ++i;
-                })
-                //使用Schedulers.parallel()线程池执行之后的操作
-                .publishOn(Schedulers.parallel())
-                .doOnComplete(() -> countDownLatch.countDown())
-                .subscribe(i -> {
-                    System.out.println("Current Thread is "
-                            + Thread.currentThread().getName() + ", value " + i);
-                });
-        //如果使用了Scheduler，则subscribe是异步的，主线程必须阻塞才行
-        System.out.println(Thread.currentThread().getName() + "-Main thread blocking");
-        countDownLatch.await();
-        System.out.println(Thread.currentThread().getName() + "-Flow complete,Main thread run and finished");
-    }
-}
-```
+### 
 
 
 
