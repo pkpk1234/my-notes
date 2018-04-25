@@ -4,3 +4,9 @@ Flux号称是异步的事件流，Java里面单线程是没法异步的，同时
 
 Reactor使用reactor.core.scheduler.Scheduler对执行一个异步执行的操作进行抽象，底层使用ExecutorService或者ScheduledExecutorService执行这个异步操作。
 
+Reactor提供了多种Scheduler实现，并提供了工厂类reactor.core.scheduler.Schedulers方便开发者使用。
+
+Flux则提供了publishOn和subscribeOn两个方法设置要使用的Scheduler。
+
+
+
