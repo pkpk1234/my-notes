@@ -84,7 +84,9 @@ public class ExpectError {
 }
 ```
 
-##### assertNext方法和expectNextMatches方法
+##### assertNext方法、expectNextMatches方法、thenConsumeWhile方法
 
-之前的测试中，Publisher中数据的值都是确定的，所以可以使用expectNext进行判断，但是很多场景下，数据的值不完全确定，只知道数据的特征或者数据量太大，无法一一写出具体的值，此时assertNext方法和expectNextMatches方法可以满足此类需求。assertNext方法和expectNextMatches方法输入参数类型不同，但是实际上底层实现完全相同，所以使用任意一个方法都可以。
+之前的测试中，Publisher中数据的值都是确定的，所以可以使用expectNext进行判断，但是很多场景下，数据的值不完全确定，只知道数据的特征或者数据量太大，无法一一写出具体的值，此时assertNext方法、expectNextMatches方法、thenConsumeWhile方法可以满足此类需求。assertNext方法需要利用第三方断言库，如junit断言进行校验，使用此方法，即可将StepVerifier集成到junit中。expectNextMatches和thenConsumeWhile则直接传入Predicate进行判断。thenConsumeWhile会使用Predicate直到数据不满足Predicate。
+
+
 
