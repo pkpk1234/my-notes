@@ -18,10 +18,11 @@ reactor-test核心接口为StepVerifier，该接口提供了若干的静态工�
 使用StepVerifier测试Publisher的套路如下：
 
 1. 首先将已有的Publisher传入StepVerifier的create方法。
-2. 多次调用expectNext、expectNextMatches方法验证Publisher每一步产生的数据是否符合预期。
-3. 可选：调用thenRequest
-4. 调用expectComplete、expectError验证Publisher是否满足正常结束或者异常结束的预期。
-5. 调用verify方法启动测试。
+2. 多次调用expectNext、expectNextMatches方法设置断言，验证Publisher每一步产生的数据是否符合预期。
+3. 调用expectComplete、expectError验证Publisher是否满足正常结束或者异常结束的预期。
+4. 调用verify方法启动测试。
+
+
 
 例子：
 
@@ -43,5 +44,18 @@ public class SimpleExpect {
 
 如果Publisher满足测试的断言，StepVerifier会正常结束。如果不满足，则会抛出AssertionError异常，如下：
 
+```java
+StepVerifier.create(Flux.just("one", "two","three"))
+                //依次校验每一步的数据是否符合预期
+                .expectNext("one")
+                .expectNext("two")
+                //不满足预期，抛出异常
+                .expectNext("Five")
+                //校验Flux流是否按照预期正常关闭
+                .expectComplete()
+                //启动
+                .verify();
+```
 
+输出：Exception in thread "main" java.lang.AssertionError: expectation "expectNext\(Five\)" failed \(expected value: Five; actual value: three\) 异常信息中输出了断言失败的原因。![](/assets/AssertionError.png)
 
