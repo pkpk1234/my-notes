@@ -19,12 +19,10 @@ reactor-test核心接口为StepVerifier，该接口提供了若干的静态工�
 
 1. 首先将已有的Publisher传入StepVerifier的create方法。
 2. 多次调用expectNext、expectNextMatches方法设置断言，验证Publisher每一步产生的数据是否符合预期。
-3. 调用expectComplete、expectError验证Publisher是否满足正常结束或者异常结束的预期。
+3. 调用expectComplete、expectError设置断言，验证Publisher是否满足正常结束或者异常结束的预期。
 4. 调用verify方法启动测试。
 
-
-
-例子：
+最简单的例子：
 
 ```java
 public class SimpleExpect {
