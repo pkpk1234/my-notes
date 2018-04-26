@@ -94,7 +94,65 @@ expectNextMatches和thenConsumeWhile则直接传入Predicate进行判断。
 
 thenConsumeWhile会持续获取并判断数据，直到不满足Predicate为止。
 
+如下例子：
 
+```java
+public class ThenConsumeWhile {
+    public static void main(String[] args) {
+        //素数数据流
+        Flux<Integer> primes = Flux.range(1, 100)
+                .filter(integer -> isPrime(integer));
 
+        StepVerifier.create(primes)
+                //素数肯定无法整除8
+                .thenConsumeWhile(integer -> (integer % 8 != 0))
+                .verifyComplete();
 
+    }
+
+    private static boolean isPrime(int n) {
+        if (n < 2) {
+            return false;
+        }
+        if (n == 2) {
+            return true;
+        }
+        if (n % 2 == 0) {
+            return false;
+        }
+        for (int i = 3; i < n; i += 2) {
+
+            if (n % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}
+```
+
+如下例子集成junit
+
+```java
+public class TestAssertNext {
+    @Test
+    public void test() {
+        Flux<Integer> just = Flux.just(1, 2, 3);
+        StepVerifier.create(just)
+                .assertNext(integer -> {
+                    assertEquals(1, integer.intValue());
+                }).assertNext(integer -> {
+            assertEquals(2, integer.intValue());
+        }).assertNext(integer -> {
+            assertEquals(3, integer.intValue());
+        }).verifyComplete();
+    }
+    
+}
+```
+
+运行结果如下：
+
+![](/assets/assetNext.png)
 
