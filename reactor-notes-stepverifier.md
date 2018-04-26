@@ -11,5 +11,9 @@
 </dependency>
 ```
 
+### StepVerifier
+
+reactor-test核心接口为StepVerifier，该接口提供了若干的静态工厂方法，从待测试的Publisher创建测试步骤。测试步骤被抽象为状态机接口FirstStep、Step和LastStep，分别代表了测试的初始阶段、中间阶段和最终阶段。这些Step上都具有一系列的expect和assert方法，用于测试当前状态是否符合预期。
+
 
 
