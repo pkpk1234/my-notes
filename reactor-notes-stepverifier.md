@@ -15,6 +15,15 @@
 
 reactor-test核心接口为StepVerifier，该接口提供了若干的静态工厂方法，从待测试的Publisher创建测试步骤。测试步骤被抽象为状态机接口FirstStep、Step和LastStep，分别代表了测试的初始阶段、中间阶段和最终阶段。这些Step上都具有一系列的expect和assert方法，用于测试当前状态是否符合预期。
 
+使用StepVerifier测试Publisher的套路如下：
+
+1. 首先将已有的Publisher传入StepVerifier的create方法。
+2. 多次调用expectNext、expectNextMatches方法验证Publisher每一步产生的数据是否符合预期
+3. 可选：调用thenRequest
+4. 调用expectComplete、expectError验证Publisher是否满足正常结束或者异常结束的预期。
+
+例子：
+
 
 
 
