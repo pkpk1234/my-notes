@@ -86,9 +86,5 @@ public class ExpectError {
 
 ##### assertNext方法和expectNextMatches方法
 
-之前的测试中，Publisher中数据的值都是确定的，所以可以使用expectNext进行判断，但是很多场景下，数据的值不完全确定，assertNext方法和expectNextMatches方法可以满足此类需求。assertNext方法和expectNextMatches方法输入参数类型不同，但是实际上底层实现完全相同，所以使用任意一个方法都可以。
-
-
-
-
+之前的测试中，Publisher中数据的值都是确定的，所以可以使用expectNext进行判断，但是很多场景下，数据的值不完全确定，只知道数据的特征或者数据量太大，无法一一写出具体的值，此时assertNext方法和expectNextMatches方法可以满足此类需求。assertNext方法和expectNextMatches方法输入参数类型不同，但是实际上底层实现完全相同，所以使用任意一个方法都可以。
 
