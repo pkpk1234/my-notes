@@ -6,6 +6,8 @@
 
 如果对Java 8 Stream比较熟悉，可以将Operator类比为Stream的中间操作，将subscribe类比为Stream的终结操作。
 
+同时，如果对函数编程比较熟悉的话，也可以看出Operator、Subscriber都是典型的函数，接收输入进行计算给出输出，并且计算时并不会修改输入的值。
+
 ### 
 
 ### 最简单的例子
