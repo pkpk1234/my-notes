@@ -4,9 +4,36 @@
 
 ![](/assets/ops.png)
 
+如果对Java 8 Stream比较熟悉，可以将Operator类比为Stream的中间操作，将subscribe类比为Stream的终结操作。
+
+### 
+
 ### 最简单的例子
 
 下面例子中使用filter获取100以内的能同时被2和7整除的整数，并逆序返回。
+
+```java
+public class SimplestOperator {
+    public static void main(String[] args) {
+        //源Flux实例
+        Flux<Integer> sourceFlux = Flux.range(0, 100);
+        //添加filter Operators之后，返回新的Flux实例
+        Flux<Integer> filteredFlux = sourceFlux.filter(integer -> (integer % 2 == 0 && integer % 7 == 0));
+        //添加sort Operators之后，返回新的Flux实例
+        Flux<Integer> sortedFlux = filteredFlux.sort((j, k) -> {
+            if (k < j) {
+                return 1;
+            } else if (k.equals(j)) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+        //调用subscribe终结链条
+        sortedFlux.subscribe(System.out::println);
+    }
+}
+```
 
 
 
