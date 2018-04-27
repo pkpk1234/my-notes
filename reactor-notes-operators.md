@@ -45,5 +45,19 @@ public class SimplestOperator {
 }
 ```
 
+程序输出如下：
+
+![](/assets/SimplestOperator.png)
+
+### Operator分类
+
+Reactor提供了超过六十个的Operator方法，大致可以分为如下 几类：
+
+1. 集合Operator：提供集合运算，如map、filter、sort、group、reduce等，和java 8 Stream的中间操作具有相同的效果。
+2. 异常处理Operator：提供异常处理机制，如retry、onErrorReturn等。
+3. 回调Operator：提供Publisher状态状态转换时的回调，如doOnCancel、doOnRequest等。
+4. 行为Operator：修改Publisher的默认行为，为其添加更多功能，如buffer、defaultIfEmpty、onBackpressureXXX等。
+5. 调试Operator：添加调试信息，如log、elapsed等。
+
 
 
