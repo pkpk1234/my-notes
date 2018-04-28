@@ -129,5 +129,84 @@ public class LogOperator {
 </configuration>
 ```
 
-输出如下：不同颜色框对应了不同的日志配置的输出。![](/assets/log-category-level.png)
+### 输出如下：不同颜色框对应了不同的日志配置的输出。![](/assets/log-category-level.png)
+
+### elapsed
+
+elapsed Operator将Flux&lt;T&gt;转为Flux&lt;Tuple2&lt;Long, T&gt;&gt;，Tuple2类似于Pair对象，将获取数据的耗时和数据本身保存在一个对象中。
+
+耗时单位是毫秒。例子如下：
+
+```java
+ public class ElapsedOperator {
+
+    public static void main(String[] args) {
+        Flux<Integer> sourceFlux = Flux.range(0, 5)
+                .map(integer -> {
+                    try {
+                        //随机休眠一段时间再返回，增加耗时
+                        Thread.sleep((long) (Math.random() * 1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return integer;
+                });
+        /**
+         * elapsed之后返回Flux<Tuple2<Long, Integer>>，Tuple2.getT1()返回
+         * 耗时，Tuple2.getT2()返回数据值
+         * 如果使用log，则会打印出信号、耗时和数据值
+         */
+
+        Flux<Tuple2<Long, Integer>> timedFlux = sourceFlux.elapsed();
+        timedFlux.log().subscribe();
+    }
+}
+
+```
+
+输出如下:
+
+![](/assets/ElapsedOperator.png)
+
+可以看到第一个数据耗时900毫秒，第二个数据耗时291毫秒，等等。
+
+### timestamp
+
+和elapsed方法类似，只不过不是返回耗时，而是返回当前时钟时间（current clock time），即数据返回时的System.currentTimeMillis\(\)值。
+
+例子如下：
+
+```java
+public class TimestampOperator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimestampOperator.class);
+
+    public static void main(String[] args) {
+        Flux<Integer> sourceFlux = Flux.range(0, 5)
+                .map(integer -> {
+                    try {
+                        //随机休眠一段时间再返回，增加耗时
+                        Thread.sleep((long) (Math.random() * 1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return integer;
+                });
+
+        /**
+         * elapsed之后返回Flux<Tuple2<Long, Integer>>，Tuple2.getT1()返回
+         * 耗时，Tuple2.getT2()返回数据值
+         * 如果使用log，则会打印出信号、当前时钟时间和数据值
+         */
+        Flux<Tuple2<Long, Integer>> timedFlux = sourceFlux.timestamp();
+        LOGGER.info("current clock time is {} ", System.currentTimeMillis());
+        timedFlux.log().subscribe();
+    }
+}
+```
+
+输出如下:
+
+![](/assets/TimestampOperator.png)
+
+完整代码：https://github.com/pkpk1234/learn-reactor
 
