@@ -73,5 +73,61 @@ log4j-slf4j-impl会包含其他所有需要的间接依赖：
 
 ![](/assets/log-log4j2.png)
 
+#### 指定日志category、loglevel、SignalType
 
+不同的log Operator可以配置不同的日志category、loglevel，实现日志输出的pattern和appender的灵活配置。
+
+同时还可以指定SignalType，仅仅记录想关注的信号类型。如下：
+
+```java
+public class LogOperator {
+    public static void main(String[] args) {
+        Flux.just(1, 2, 3, 4, 5)
+                //日志记录详细的执行步骤
+                .log()
+                .subscribe();
+
+        Flux.just(1, 2, 3, 4, 5)
+                //使用自定义日志配置
+                .log("myCategory")
+                .subscribe();
+
+        Flux.just(1, 2, 3, 4, 5)
+                //使用自定义日志配置，仅仅关注onComplete信号
+                .log("myCategory", Level.WARNING, SignalType.ON_COMPLETE)
+                .subscribe();
+    }
+}
+```
+
+修改log4j2.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <Console name="Console2" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yy-MMM-dd HH:mm:ss:SSS}] [%p] [%c{1}:%L] - %m%n"/>
+        </Console>
+
+    </appenders>
+
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <!-- name必须和log方法中category相同 -->
+        <logger level="info" name="myCategory">
+            <AppenderRef ref="Console2"/>
+        </logger>
+    </Loggers>
+</configuration>
+```
+
+输出如下：不同颜色框对应了不同的日志配置的输出。![](/assets/log-category-level.png)
 
