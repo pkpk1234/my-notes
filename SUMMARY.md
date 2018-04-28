@@ -10,4 +10,5 @@
 * [Reactor学习--Flux线程相关方法](reactorxue-4e60-flux-xian-cheng-xiang-guan-fang-fa.md)
 * [Reactor-Notes-StepVerifier](reactor-notes-stepverifier.md)
 * [Reactor-Notes-Operators](reactor-notes-operators.md)
+* [Reactor-Notes-LogOps](reactor-notes-logops.md)
 
