@@ -94,6 +94,7 @@ public class LogOperator {
 
         Flux.just(1, 2, 3, 4, 5)
                 //使用自定义日志配置，仅仅关注onComplete信号
+                //注意Level类型是java.util.logging.Level
                 .log("myCategory", Level.WARNING, SignalType.ON_COMPLETE)
                 .subscribe();
     }
@@ -129,7 +130,7 @@ public class LogOperator {
 </configuration>
 ```
 
-### 输出如下：不同颜色框对应了不同的日志配置的输出。![](/assets/log-category-level.png)
+输出如下：不同颜色框对应了不同的日志配置的输出。![](/assets/log-category-level.png)如果这样还满足不了要求，还可以在log方法中传入指定的Logger。
 
 ### elapsed
 
@@ -161,7 +162,6 @@ elapsed Operator将Flux&lt;T&gt;转为Flux&lt;Tuple2&lt;Long, T&gt;&gt;，Tuple2
         timedFlux.log().subscribe();
     }
 }
-
 ```
 
 输出如下:
@@ -208,5 +208,5 @@ public class TimestampOperator {
 
 ![](/assets/TimestampOperator.png)
 
-完整代码：https://github.com/pkpk1234/learn-reactor
+完整代码：[https://github.com/pkpk1234/learn-reactor](https://github.com/pkpk1234/learn-reactor)
 
