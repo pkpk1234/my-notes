@@ -25,7 +25,11 @@ public class LogOperator {
 
 ![](/assets/logConsole.png)
 
-log支持JDK log框架和使用slf4j门面的日志框架。下面使用slf4j和log4j2为例：
+log默认使用的是java.util.logging框架，但是同时也支持slf4j门面的日志框架。
+
+### 使用日志框架
+
+log支持使用slf4j门面的日志框架，如果classpath中存在此类日志框架，则优先使用。下面使用slf4j和log4j2为例：
 
 首先添加依赖：
 
