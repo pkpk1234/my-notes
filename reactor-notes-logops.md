@@ -45,8 +45,29 @@ log4j-slf4j-impl会包含其他所有需要的间接依赖：
 |  +- org.slf4j:slf4j-api:jar:1.7.25:compile
 |  +- org.apache.logging.log4j:log4j-api:jar:2.9.0:compile
 |  \- org.apache.logging.log4j:log4j-core:jar:2.9.0:runtime
-
 ```
 
-然后添加log4j2.xml配置文件，注意：log的日志级别是info
+然后添加log4j2.xml配置文件，注意：log Operator默认的日志级别是info。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</configuration>
+```
+
+输出如下：
+
+![](/assets/log-log4j2.png)
+
+
 
