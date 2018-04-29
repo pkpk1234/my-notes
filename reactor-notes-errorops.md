@@ -31,7 +31,7 @@ public class StaticFallbackValue {
 
 ### 静态fallback条件值（StaticFallbackConditionValue）
 
- 在编译时写死fallbakc value并不灵活，所以Reactor提供了根据异常信息返回不同fallback value的功能。
+在编译时写死fallbakc value并不灵活，所以Reactor提供了根据异常信息返回不同fallback value的功能。
 
 onErrorReturn可以根据异常的信息，返回不同的值。如下：
 
@@ -82,7 +82,7 @@ public class StaticFallbackConditionValue {
 
 ![](/assets/StaticFallbackConditionValue.png)
 
+onErrorResume
 
-
-
+onErrorReturn在发生异常时结束流，后面的数据也不会再被发送。 但是很多场景中，并不希望一个异常数据影响整个流，此时可以使用onErrorResume。
 
