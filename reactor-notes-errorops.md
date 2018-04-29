@@ -82,7 +82,159 @@ public class StaticFallbackConditionValue {
 
 ![](/assets/StaticFallbackConditionValue.png)
 
-onErrorResume
+### onErrorResume
 
-onErrorReturn在发生异常时结束流，后面的数据也不会再被发送。 但是很多场景中，并不希望一个异常数据影响整个流，此时可以使用onErrorResume。
+onErrorReturn在发生异常时结束流，后面的数据也不会再被发送。 但是很多场景中，并不希望一个异常数据影响整个流，此时可以使用onErrorResume替代onErrorReturn。onErrorResumej接收一个Function&lt;? super Throwable, ? extends Publisher&lt;? extends T&gt;&gt; 对象。可以认为该对象是一个fallback method，接收异常信息，输出和流中数据的类型相同的值，使用这个返回值替代异常的数据值返回给Subscriber。 例子如下:
+
+```java
+public class FallbackMethod {
+    private static Function<? super Throwable, ? extends Publisher<String>> fallback
+            = e -> Mono.just(e.getMessage());
+
+    public static void main(String[] args) {
+        //1. 默认方法
+        Flux<String> flux = Flux.just("0", "1", "2", "abc")
+                .map(i -> Integer.parseInt(i) + "")
+                .onErrorResume(e -> Mono.just("input string is not a number ," + e.getMessage()));
+        flux.log().subscribe(System.out::println);
+
+        //2. 根据异常类型选择返回方法
+        flux = Flux.just("0", "1", "2", "abc")
+                .map(i -> Integer.parseInt(i) + "")
+                .onErrorResume(ArithmeticException.class, e -> Mono.just("ArithmeticException:" + e.getMessage()))
+                .onErrorResume(NumberFormatException.class, e -> Mono.just("input string is not a number"))
+                //如果上面列出的异常类型都不满足，使用默认方法
+                .onErrorResume(e -> Mono.just(e.getMessage()));
+        // 因为异常类型为NumberFormatException，此处应该打印字符串input string is not a number
+        flux.log().subscribe(System.out::println);
+
+        //3. 根据Predicate选择返回方法
+        flux = Flux.just("0", "1", "2", "abc")
+                .map(i -> Integer.parseInt(i) + "")
+                .onErrorResume(e -> e.getMessage().equals("For input string: \"abc\""),
+                        e -> Mono.just("exception data is abc"))
+                //onErrorResume可以和onErrorReturn混合使用
+                .onErrorReturn("SystemException");
+        //因为判断条件，此处应该打印exception data is abc
+        flux.log().subscribe(System.out::println);
+    }
+}
+```
+
+运行结果如下：可以看到，Flux流并没有因为异常数据结束，而是使用fallback method的返回值返回给Subscriber了。
+
+![](/assets/fallback.png)
+
+### doOnError
+
+有些场景下，只是想简单记录下日志，并不想提供异常时作为替代的返回值，也不想影响默认的异常传播机制，此时可以使用doOnError。如下：
+
+```java
+public class DoOnError {
+    public static void main(String[] args) {
+
+        //1. 默认doOnError方法
+        Flux<String> flux = Flux.just("0", "1", "2", "abc","3")
+                .map(i -> Integer.parseInt(i) + "")
+                .doOnError(e -> e.printStackTrace())
+                .onErrorReturn("System exception");
+        flux.log().subscribe(System.out::println);
+
+        //2. 根据异常类型选择doError方法
+        flux = Flux.just("0", "1", "2", "abc","3")
+                .map(i -> Integer.parseInt(i) + "")
+                .doOnError(RuntimeException.class, e -> {
+                    System.err.println("发生了RuntimeException");
+                    e.printStackTrace();
+                })
+                .doOnError(NumberFormatException.class, e -> {
+                    System.err.println("发生了NumberFormatException");
+                    e.printStackTrace();
+                })
+                .onErrorReturn("System exception");
+        //因为异常类型为NumberFormatException，此处应打印字符串发生了NumberFormatException
+        //又因为doOnError不会阻止异常传播，所以onErrorReturn会执行，返回字符串System exception
+        flux.log().subscribe(System.out::println);
+
+        //3. 根据Predicate选择doError方法
+        //   注意doOnError不会阻止异常传播，所以onErrorReturn可以多次触发
+        flux = Flux.just("0", "1", "2", "abc","3")
+                .map(i -> Integer.parseInt(i) + "")
+                .doOnError(e -> e instanceof Throwable, e -> {
+                    System.err.println("异常类型为Throwable");
+                })
+                .doOnError(e -> e instanceof Exception, e -> {
+                    System.err.println("同时异常类型为Exception");
+                })
+                .doOnError(e -> e instanceof NumberFormatException, e -> {
+                    System.err.println("并且异常类型为NumberFormatException");
+                })
+                .doOnError(e -> e instanceof Error, e -> {
+                    System.err.println("异常类型为Error");
+                })
+                .onErrorReturn("System exception");
+        //因为异常类型为NumberFormatException，所以前面3个doOnError都会被调用
+        flux.log().subscribe(System.out::println);
+    }
+}
+```
+
+### 重试
+
+简单粗暴的异常处理方式，一次不成功就来两次，两次不成功就三次，以此类推。
+
+
+
+```java
+public class Retying {
+    public static void main(String[] args) throws InterruptedException {
+
+
+        //默认异常retry
+        Flux<String> flux = Flux.just("0", "1", "2", "abc")
+                .map(i -> Integer.parseInt(i) + "")
+                .retry(2);
+        flux.subscribe(newSub());
+
+        //带条件判断的retry
+        System.out.println("-------------------------------------------------");
+        Thread.sleep(500);
+        flux = Flux.just("0", "1", "2", "abc")
+                .map(i -> Integer.parseInt(i) + "")
+                .retry(1, e -> e instanceof Exception);
+
+        flux.subscribe(newSub());
+
+    }
+
+    private static Subscriber<String> newSub() {
+        return new BaseSubscriber<String>() {
+            @Override
+            protected void hookOnSubscribe(Subscription subscription) {
+                System.out.println("start");
+                request(1);
+            }
+
+            @Override
+            protected void hookOnNext(String value) {
+                System.out.println("get value is " + Integer.parseInt(value));
+                request(1);
+            }
+
+            @Override
+            protected void hookOnComplete() {
+                System.out.println("Complete");
+            }
+
+            @Override
+            protected void hookOnError(Throwable throwable) {
+                System.err.println(throwable.getMessage());
+            }
+        };
+    }
+}
+之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。
+```
+
+
 
