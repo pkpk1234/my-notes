@@ -10,7 +10,77 @@
 
 ### 静态fallback值（StaticFallbackValue）
 
-通过onErrorReturn方法加工返回的Publisher，提供了静态fallback值，即Publisher异常时，返回一个编译时写死的值，这也StaticFallbackValue中Static的意思。
+通过onErrorReturn方法加工返回的Publisher，提供了静态fallback值，即Publisher异常时，返回一个编译时写死的值，这也StaticFallbackValue中Static的意思。如下例子：
+
+```java
+public class StaticFallbackValue {
+    public static void main(String[] args) {
+        Flux<Integer> flux = Flux.just(0)
+                .map(i -> 1 / i)
+                //异常时返回0
+                .onErrorReturn(0);
+        //输出应该为0
+        flux.log().subscribe(System.out::println);
+    }
+}
+```
+
+例子中我们还有log Operator记录每个step，根据预期Flux不会抛出异常，而是返回静态fallbakc值0，运行结果如下：完全符合我们的预期。
+
+![](/assets/StaticFallbackValue.png)
+
+### 静态fallback条件值（StaticFallbackConditionValue）
+
+ 在编译时写死fallbakc value并不灵活，所以Reactor提供了根据异常信息返回不同fallback value的功能。
+
+onErrorReturn可以根据异常的信息，返回不同的值。如下：
+
+```java
+public class StaticFallbackConditionValue {
+    public static void main(String[] args) {
+        //1. 根据异常类型进行判断
+        Flux<Integer> flux = Flux.just(0)
+                .map(i -> 1 / i)
+                //ArithmeticException异常时返回1
+                .onErrorReturn(NullPointerException.class, 0)
+                .onErrorReturn(ArithmeticException.class, 1);
+        //输出应该为1
+        flux.log().subscribe(System.out::println);
+
+        final String nullStr = null;
+        //just不允许对象为null
+        Flux<String> stringFlux = Flux.just("")
+                .map(str -> nullStr.toString())
+                //NullPointerException异常时返回字符串NullPointerException
+                .onErrorReturn(NullPointerException.class, "NullPointerException")
+                .onErrorReturn(ArithmeticException.class, "ArithmeticException");
+        //输出应该为NullPointerException
+        stringFlux.log().subscribe(System.out::println);
+
+        //2. 根据Predicate进行判断
+        AtomicInteger index = new AtomicInteger(0);
+        Flux.just(0, 1, 2, 3)
+                .map(i -> {
+                    index.incrementAndGet();
+                    return 1 / i;
+                })
+                .onErrorReturn(NullPointerException.class, 0)
+                .onErrorReturn(e -> index.get() < 2, 1)
+                //因为上一个onErrorReturn匹配了条件，所以异常传播被关闭，之后的
+                //onErrorReturn不会再被触发
+                .onErrorReturn(e -> index.get() < 1, 2)
+
+                //因为异常类型为NumberFormatException，此处应打印1
+                .log().subscribe(System.out::println);
+    }
+}
+```
+
+可以多次调用onErrorReturn，最匹配的一个会处理异常，一旦异常被处理，异常传播则会结束，后面的onErrorReturn不会再接收到异常。
+
+运行结果如下：
+
+![](/assets/StaticFallbackConditionValue.png)
 
 
 
