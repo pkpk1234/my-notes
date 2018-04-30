@@ -181,9 +181,7 @@ public class DoOnError {
 
 ### 重试
 
-简单粗暴的异常处理方式，一次不成功就来两次，两次不成功就三次，以此类推。
-
-
+简单粗暴的异常处理方式，一次不成功就来两次，两次不成功就三次，以此类推。之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。
 
 ```java
 public class Retying {
@@ -233,8 +231,59 @@ public class Retying {
         };
     }
 }
-之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。之前说过，每添加一个Operator，都是返回一个新的Publisher，此处也不例外，下面的例子可以清晰的证明。
+
 ```
 
+运行后输出如下：可以看到每次retry时，Flux中的数据都重新又被Subscriber消费了一次。所以，如果需要使用retry异常机制，应该保证Subscriber在消费数据的方法是幂等的，否则可能出现数据重复消费的情况，从而导致系统和业务异常。
 
+![](/assets/Retying.png)
+
+### 受检异常的处理
+
+非受检异常会被Reactor传播，而受检异常必须被用户代码try catch，为了让受检异常被reactor的异常传播机制和异常处理机制支持，可以使用如下步骤处理：
+
+1. 使用 Exceptions.propagate将受检异常包装为非受检异常并重新抛出传播出去。
+2. onError、error回调等异常处理操作获取到异常之后，可以调用Exceptions.unwrap取得原受检的异常。
+
+如下：
+
+```java
+public class CheckedExceptionHandle {
+    public static void main(String[] args) {
+        Flux<String> flux = Flux.just("abc", "def", "exception", "ghi")
+                .map(s -> {
+                    try {
+                        return doSth(s);
+                    } catch (FileNotFoundException e) {
+                        // 包装并传播异常
+                        throw Exceptions.propagate(e);
+                    }
+                });
+        //abc、def正常打印，然后打印 参数异常
+        flux.subscribe(System.out::println,
+                e -> {
+                    //获取原始受检异常
+                    Throwable sourceEx = Exceptions.unwrap(e);
+                    //判断异常类型并处理
+                    if (sourceEx instanceof FileNotFoundException) {
+                        System.err.println(((FileNotFoundException) sourceEx).getMessage());
+                    } else {
+                        System.err.println("Other exception");
+                    }
+                });
+
+    }
+
+    public static String doSth(String str) throws FileNotFoundException {
+        if ("exception".equals(str)) {
+            throw new FileNotFoundException("参数异常");
+        } else {
+            return str.toUpperCase();
+        }
+    }
+}
+
+```
+
+输出如下：可以看到受检异FileNotFoundException被封装后抛出，然后再onErrorCallback中捕获并转换为真实异常类型。![](/assets/CheckedExceptionHandle.png)完整代码：https://github.com/pkpk1234/learn-reactor
 
