@@ -2,7 +2,7 @@
 
 Reactor中，集合类Operator应用于包含多个元素的Flux上。可以分为如下几类：
 
-1. 判断元素是否满足条件，如all、any、hasElement、hasElements等。
+1. 判断元素是否满足条件，如all、any、hasElement等。
 2. 过滤器filter。
 3. 排序sort。
 4. 去重distinct、distinctUntilChanged。
@@ -36,7 +36,13 @@ public class AllOperator {
 
 any和all类似，区别在于any只要求至少有一个元素满足Predicate的要求即返回true。判断时也使用短路策略，即只要发现有一个元素满足要求，立刻返回ture，不再对剩余元素进行判断。
 
-### hasElements
+### hasElement
+
+这个操作对于null元素返回false，同时基于any。
+
+hasElement\(T value\) 等价于any\(t -&gt; Objects.equals\(value, t\)\)。
+
+
 
 
 
