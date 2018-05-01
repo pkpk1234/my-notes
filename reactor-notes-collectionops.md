@@ -96,5 +96,7 @@ public class Filter {
 
 ### sort
 
+sort分为无参数和接收Comparator参数两种。无参数sort要求元素必须实现Comparable接口，接收Comparator参数sort使用接收到的Comparator对元素进行排序。需要注意的时，如果Flux是无限的，sort操作会导致OOM。
+
 
 
