@@ -12,4 +12,5 @@
 * [Reactor-Notes-Operators](reactor-notes-operators.md)
 * [Reactor-Notes-LogOps](reactor-notes-logops.md)
 * [Reactor-Notes-ErrorOps](reactor-notes-errorops.md)
+* [Reactor-Notes-CollectionOps](reactor-notes-collectionops.md)
 
