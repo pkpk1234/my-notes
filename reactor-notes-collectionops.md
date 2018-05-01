@@ -44,5 +44,3 @@ hasElement\(T value\) 等价于any\(t -&gt; Objects.equals\(value, t\)\)。
 
 
 
-
-
