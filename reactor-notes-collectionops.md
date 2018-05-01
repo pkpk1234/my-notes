@@ -1,13 +1,14 @@
 # Project Reactor学习--集合Operator
 
-Reactor中，集合类Operator应用于包含多个元素的Flux上。可以分为如下几类：
+Reactor中，集合类Operator应用于包含多个元素的Flux上，功能和Java 8 Stream中同名函数基本一致。可以分为如下几类：
 
 1. 判断元素是否满足条件，如all、any、hasElement等。
 2. 过滤器filter。
 3. 排序sort。
 4. 去重distinct、distinctUntilChanged。
 5. 映射map、flatMap。
-6. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
+6. reduce。
+7. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
 
 ### all
 
@@ -41,6 +42,10 @@ any和all类似，区别在于any只要求至少有一个元素满足Predicate�
 这个操作对于null元素返回false，同时基于any。
 
 hasElement\(T value\) 等价于any\(t -&gt; Objects.equals\(value, t\)\)。
+
+### filter
+
+filter接收一个Predicate参数，使用这个Predicate对元素进行判断，不满足条件的元素都会被过滤掉。
 
 
 
