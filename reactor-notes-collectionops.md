@@ -7,8 +7,9 @@ Reactor中，集合类Operator应用于包含多个元素的Flux上，功能和J
 3. 排序sort。
 4. 去重distinct、distinctUntilChanged。
 5. 映射map、flatMap。
-6. reduce。
-7. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
+6. 分组group。
+7. reduce。
+8. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
 
 ### all
 
@@ -92,6 +93,10 @@ public class Filter {
     }
 }
 ```
+
+### sort
+
+
 
 
 
