@@ -5,8 +5,8 @@ Reactor中，集合类Operator应用于包含多个元素的Flux上，功能和J
 1. 判断元素是否满足条件，如all、any、hasElement等。
 2. 过滤器filter。
 3. 排序sort。
-4. 分组group。
-5. 去重distinct、distinctUntilChanged。
+4. 去重distinct、distinctUntilChanged。
+5. 分组group。
 6. 映射map、flatMap。
 7. reduce。
 8. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
