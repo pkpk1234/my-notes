@@ -5,9 +5,9 @@ Reactor中，集合类Operator应用于包含多个元素的Flux上，功能和J
 1. 判断元素是否满足条件，如all、any、hasElement等。
 2. 过滤器filter。
 3. 排序sort。
-4. 去重distinct、distinctUntilChanged。
-5. 映射map、flatMap。
-6. 分组group。
+4. 分组group。
+5. 去重distinct、distinctUntilChanged。
+6. 映射map、flatMap。
 7. reduce。
 8. 转换求值并结束Flux的操作，如collect、collectList、count等操作。
 
@@ -212,7 +212,7 @@ public class GroupBy {
                         //根据性别进行数量计算总数
                         Mono.just(groupedFlux.key())
                                 .zipWith(groupedFlux.count()))
-                
+
                 .map(keyAndCount -> "key: " + keyAndCount.getT1() + ",count is " + keyAndCount.getT2())
                 .subscribe(System.out::println);
     }
@@ -253,6 +253,4 @@ public class GroupBy {
 运行结果如下：
 
 ![](/assets/group.png)
-
-
 
