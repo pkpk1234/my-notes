@@ -258,7 +258,29 @@ public class GroupBy {
 
 ##### map
 
-map操作将一个Flux中的元素依次挨个转换另外的元素，即将源元素作为输入，进行某种计算，将计算结果作为Flux的元素返回给Subscriber。计算时，可以根据源元素的值进行计算，也可以完全忽略源元素。
+map操作将一个Flux中的元素依次挨个转换另外的元素，即将源元素作为输入，进行某种计算，将计算结果作为Flux的元素返回给Subscriber。计算时，可以根据源元素的值进行计算，也可以完全忽略源元素。如下例子：
+
+```java
+public class MapOperator {
+    public static void main(String[] args) {
+        //不根据源元素映射
+        Flux.range(0, 10)
+                //无论源元素的值是什么，都映射为硬编码的值
+                .map(integer -> "test value")
+                .subscribe(System.out::println);
+
+        //根据源元素，映射为其sin值
+        Flux.range(0, 10)
+                .map(integer -> Math.sin(integer))
+                .subscribe(System.out::println);
+
+    }
+}
+```
+
+输出如下：
+
+![](/assets/mapOperator.png)
 
 
 
