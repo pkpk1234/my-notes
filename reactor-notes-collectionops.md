@@ -302,7 +302,7 @@ public class FlatMapOperator {
 
 输出如下：
 
-![](/assets/flatMap.png)
+![](/assets/flatMap2.png)
 
 ### reduce
 
@@ -332,7 +332,9 @@ public class ReduceOperator {
 }
 ```
 
-### collectXXX
+完整代码：https://github.com/pkpk1234/learn-reactor
+
+
 
 
 
