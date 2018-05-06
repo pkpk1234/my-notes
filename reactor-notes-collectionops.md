@@ -323,7 +323,7 @@ public class ReduceOperator {
         //reduce方式求和
         source.reduce((i, j) -> i + j)
                 .subscribe(System.out::println);
-        
+
         //reduce方式求和，并且指定reduce的初始值
         source.reduce(100, (i, j) -> i + j)
                 .subscribe(System.out::println);
@@ -331,6 +331,8 @@ public class ReduceOperator {
     }
 }
 ```
+
+### collectXXX
 
 
 
