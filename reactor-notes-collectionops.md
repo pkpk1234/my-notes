@@ -284,5 +284,5 @@ public class MapOperator {
 
 ##### flatMap
 
-如果Flux中的元素类型为Publisher，即Flux中每个元素都是一个响应式流时，flatMap可以将这些元素中的流拼接起来，作为一个流返回。
+如果一个Flux中的元素类型为Publisher，即Flux中每个元素都是一个响应式流时，flatMap可以将这些元素中的流拼接起来，作为一个流返回。
 
