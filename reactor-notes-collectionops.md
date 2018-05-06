@@ -284,5 +284,49 @@ public class MapOperator {
 
 ##### flatMap
 
-如果一个Flux中的元素类型为Publisher，即Flux中每个元素都是一个响应式流时，flatMap可以将这些元素中的流拼接起来，作为一个流返回。
+如果一个Flux中的元素类型为Publisher，即Flux中每个元素都是一个响应式流时，flatMap可以将这些元素中的流拼接起来，作为一个流返回。如下例子将字符串拆分，并求得不重复的字母。
+
+```java
+public class FlatMapOperator {
+    public static void main(String[] args) {
+        Flux<String> flux = Flux.just("a,b,c", "b,c,d", "a,c,d", "a,d,e")
+                //每个元素都是一个Flux
+                .map(str -> Flux.fromArray(str.split(",")))
+                //展开为一个Flux流
+                .flatMap(stringFlux -> stringFlux);
+        Flux<String> distinct = flux.distinct();
+        distinct.subscribe(System.out::println);
+    }
+}
+```
+
+输出如下：
+
+![](/assets/flatMap.png)
+
+### reduce
+
+将流中所有元素反复结合起来，来得到一个值，可以使用reduce。如下求和例子：
+
+```java
+public class ReduceOperator {
+    public static void main(String[] args) {
+        Flux<Integer> source = Flux.range(0, 100);
+
+        //使用迭代方式求和
+        final AtomicInteger sum = new AtomicInteger(0);
+        source.subscribe(integer ->
+                sum.getAndAdd(integer)
+        );
+        System.out.println(sum.get());
+
+        //reduce方式求和
+        source.reduce((i, j) -> i + j)
+                .subscribe(System.out::print);
+
+    }
+}
+```
+
+
 
