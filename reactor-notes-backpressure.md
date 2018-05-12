@@ -6,3 +6,5 @@ Reactor提供了多种背压策略。
 
 buffer方法
 
+在Subscriber无法及时消费时，现将数据缓存起来，避免压死Subscriber。
+
