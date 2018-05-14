@@ -4,7 +4,7 @@
 
 背压的作用是当消费者处理能力不足时，让生产者缓下来，不让消费者被压垮。
 
-Reactor提供了多种背压策略。
+Reactor提供了多种背压策略。Subscriber使用request反馈消费速度。
 
 buffer方法
 
