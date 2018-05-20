@@ -225,7 +225,8 @@ public class BackpressureOnBackpressureBuffer2 {
         });
     }
 
-    private static Flux<String> getHotFlux(UnicastProcessor hotSource, int maxBufferSize, BufferOverflowStrategy strategy) {
+    private static Flux<String> getHotFlux(UnicastProcessor hotSource, 
+    int maxBufferSize, BufferOverflowStrategy strategy) {
 
         return hotSource
                 .publish()
@@ -238,4 +239,14 @@ public class BackpressureOnBackpressureBuffer2 {
 执行结果：注意get rest elements之后的值，Drop Oldest会保存最新的值，反正则是最久的值。
 
 ![](/assets/dropOldest.png)  ![](/assets/dropLasted.png)
+
+#### onBackPressureError
+
+onBackPressureError直接抛出异常。
+
+#### onBackPressureLatest
+
+onBackPressureLates相当于onBackpressureBuffer\(1, DROP\_OLDEST\) ，如下：
+
+
 
