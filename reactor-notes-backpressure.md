@@ -172,7 +172,7 @@ public class BackpressureOnBackpressureError {
 
 ![](/assets/BackpressureOnBackpressureError.png)
 
-##### 背压策略类
+##### 
 
-除了策略方法，Reactor还提供了对应的策略类，FluxOnBackpressureBufferStrategy、
+
 
