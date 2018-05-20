@@ -8,5 +8,11 @@
 
 ### 使用App访问
 
-常见的App和服务器交互一般使用json格式，如下所示：异常json中也包含了请求的path，请求时间，异常信息。![](/assets/default-exception-json.png)
+### 常见的App和服务器交互一般使用json格式，如下所示：异常json中也包含了请求的path，请求时间，异常信息。![](/assets/default-exception-json.png)
+
+### 原理
+
+
+
+
 
