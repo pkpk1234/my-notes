@@ -114,8 +114,6 @@ public class MyLimitedSubscriber<T> extends BaseSubscriber<T> {
 
 上面例子中Publisher在收到request之后，实际上是采用了默认的OverflowStrategy，即将数据缓存起来，当Subscriber有能力处理时，再推送过去。
 
-### 
-
 ### 背压策略
 
 背压策略指的是当Subscriber无法及时request更多数据时，Publisher采取的措施。
