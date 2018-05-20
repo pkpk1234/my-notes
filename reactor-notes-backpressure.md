@@ -235,7 +235,7 @@ public class BackpressureOnBackpressureBuffer2 {
 }
 ```
 
-执行结果：
+执行结果：注意get rest elements之后的值，Drop Oldest会保存最新的值，反正则是最久的值。
 
 ![](/assets/dropOldest.png)  ![](/assets/dropLasted.png)
 
