@@ -116,7 +116,9 @@ public class MyLimitedSubscriber<T> extends BaseSubscriber<T> {
 
 ### Cold流和Hot流
 
+Cold流不论订阅者在何时订阅该数据流，总是能收到数据流中产生的全部消息，所以Cold流是肯定保存了数据流中所有数据的。
 
+Hot流则是在持续不断地产生消息，订阅者只能获取到在其订阅之后产生的消息。
 
 
 
