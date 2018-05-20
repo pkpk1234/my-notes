@@ -1,14 +1,14 @@
-# Cold流和Hot流
+## Cold流和Hot流
 
 Cold流不论订阅者在何时订阅该数据流，总是能收到数据流中产生的全部消息，所以Cold流是肯定保存了数据流中所有数据的。
 
 Hot流则是在持续不断地产生消息，订阅者只能获取到在其订阅之后产生的消息。
 
-### 构造Hot流
+## 构造Hot流
 
 两种方式：将已有 Cold流转变为Hot流和使用Processor动态产生数据。
 
-##### 将已有Cold流转变为Hot流
+### 将已有Cold流转变为Hot流
 
 只需要调用publish方法即可，只是要注意，添加非第一个Subscriber前，需要调用一下connect方法。如下例子：
 
@@ -37,7 +37,7 @@ public class ConvertCold2Hot {
 
 ![](/assets/ConvertCold2Hot.png)
 
-##### 使用Processor构造Hot流
+### 使用Processor构造Hot流
 
 使用Processor的publish方法即可构造出一个Hot Stream，调用同一个Processor实例的onNext方法即可为之前构造的Hot Stream提供数据。如下例子：
 
