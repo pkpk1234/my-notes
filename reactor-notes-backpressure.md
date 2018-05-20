@@ -194,5 +194,7 @@ public class HotStreamByProcessor {
 }
 ```
 
+执行结果如下：可以看到subscribe2的值从4开始。
 
+![](/assets/HotStreamByProcessor.png)
 
