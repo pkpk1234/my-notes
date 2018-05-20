@@ -310,7 +310,9 @@ public class BackPressureOnBackpressureLatest {
 
 onBackpressureDrop会丢弃溢出的所有元素。
 
-### 
+![](/assets/drop.png)
 
 
+
+完整代码：https://github.com/pkpk1234/learn-reactor
 
