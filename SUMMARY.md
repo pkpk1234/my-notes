@@ -14,4 +14,5 @@
 * [Reactor-Notes-ErrorOps](reactor-notes-errorops.md)
 * [Reactor-Notes-CollectionOps](reactor-notes-collectionops.md)
 * [Reactor-Notes-Backpressure](reactor-notes-backpressure.md)
+* [Reactor-Notes-ColdHotStreams](reactor-notes-coldhotstreams.md)
 
