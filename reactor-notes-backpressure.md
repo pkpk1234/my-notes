@@ -124,7 +124,38 @@ Hot流则是在持续不断地产生消息，订阅者只能获取到在其订�
 
 ### 构造Hot流
 
-两种方式：将已有 Cold流转化为Hot流和使用Processor动态产生数据。
+两种方式：将已有 Cold流转变为Hot流和使用Processor动态产生数据。
+
+##### 将已有Cold流转变为Hot流
+
+只需要调用publish方法即可，只是要注意，添加非第一个Subscriber前，需要调用一下connect方法。如下例子：
+
+```java
+public class ConvertCold2Hot {
+    public static void main(String[] args) throws InterruptedException {
+        ConnectableFlux<Long> flux = Flux.interval(Duration.ofSeconds(1))
+                .take(10)
+                .publish();
+        flux.subscribe(aLong -> {
+            System.out.println("subscriber1 ,value is " + aLong);
+        });
+
+        Thread.sleep(5000);
+        //加入第二个Subscriber之前，需要connect一下
+        flux.connect();
+        flux.subscribe(aLong -> {
+            System.out.println("subscriber2 ,value is " + aLong);
+        });
+        flux.blockLast();
+    }
+}
+```
+
+执行结果如下：注意subscriber2获取的值从5开始了，因为此时Hot流中的数据从5开始的。
+
+![](/assets/ConvertCold2Hot.png)
+
+##### 使用Processor构造Hot流
 
 
 
