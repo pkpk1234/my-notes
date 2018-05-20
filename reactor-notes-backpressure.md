@@ -120,8 +120,6 @@ Cold流不论订阅者在何时订阅该数据流，总是能收到数据流中�
 
 Hot流则是在持续不断地产生消息，订阅者只能获取到在其订阅之后产生的消息。
 
-所以Cold流无法实现背压中Buffer策略之外的策略，只能使用Hot流才能实现。
-
 ### 构造Hot流
 
 两种方式：将已有 Cold流转变为Hot流和使用Processor动态产生数据。
@@ -202,7 +200,11 @@ public class HotStreamByProcessor {
 
 背压策略指的是当Subscriber无法及时request更多数据时，Publisher采取的措施。
 
-可选的策略有buffer、error 、drop和latest，默认策略为buffer。可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
+可选的策略有buffer、error 、drop和latest，默认策略为buffer。
+
+##### 背压策略方法
+
+可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
 
 例子如下：
 
@@ -250,5 +252,9 @@ public class BackpressureOnBackpressureError {
 
 执行结果如下：
 
+![](/assets/BackpressureOnBackpressureError.png)
 
+##### 背压策略类
+
+除了策略方法，Reactor还提供了对应的策略类，FluxOnBackpressureBufferStrategy、
 
