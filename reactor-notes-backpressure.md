@@ -248,5 +248,61 @@ onBackPressureError直接抛出异常。
 
 onBackPressureLates相当于onBackpressureBuffer\(1, DROP\_OLDEST\) ，如下：
 
+```java
+public class BackPressureOnBackpressureLatest {
+    public static void main(String[] args) {
+        onBackpressureLatest();
+    }
 
+    private static void onBackpressureLatest() {
+        UnicastProcessor<String> hotSource = UnicastProcessor.create();
+        Flux<String> hotFlux = getHotFlux(hotSource);
+        CompletableFuture future = produceData(hotSource);
+        //构建Subscriber，初次请求20个元素
+        BaseSubscriber<String> subscriber = createSubscriber(20);
+        hotFlux.subscribe(subscriber);
+
+        future.join();
+        System.out.println("get rest elements");
+        //再次获取10个元素，根据策略应返还最后的10个元素
+        subscriber.request(10);
+    }
+
+    private static BaseSubscriber<String> createSubscriber(int initRequests) {
+        return new BaseSubscriber<String>() {
+            @Override
+            protected void hookOnSubscribe(Subscription subscription) {
+                request(initRequests);
+            }
+
+            @Override
+            protected void hookOnNext(String value) {
+                System.out.println("get value " + value);
+            }
+        };
+    }
+
+    private static CompletableFuture produceData(UnicastProcessor<String> hotSource) {
+        return CompletableFuture.runAsync(() -> {
+            IntStream.range(0, 50).forEach(
+                    value -> {
+                        hotSource.onNext("value is " + value);
+                    }
+            );
+        });
+    }
+
+    private static Flux<String> getHotFlux(UnicastProcessor hotSource) {
+
+        return hotSource
+                .publish()
+                .autoConnect()
+                .onBackpressureLatest();
+    }
+}
+```
+
+运行结果：注意rest element为49，即buffer为1，并且只保存了最新的一个元素。
+
+![](/assets/BackPressureOnBackpressureLatest.png)
 
