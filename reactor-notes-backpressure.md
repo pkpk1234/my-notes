@@ -120,7 +120,7 @@ public class MyLimitedSubscriber<T> extends BaseSubscriber<T> {
 
 可选的策略有buffer、error 、drop和latest，默认策略为buffer。
 
-##### 背压策略方法
+### 背压策略方法
 
 可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
 
@@ -309,4 +309,8 @@ public class BackPressureOnBackpressureLatest {
 #### onBackpressureDrop
 
 onBackpressureDrop会丢弃溢出的所有元素。
+
+### 背压策略类
+
+
 
