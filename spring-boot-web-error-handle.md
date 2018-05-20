@@ -4,7 +4,7 @@
 
 #### 使用浏览器时
 
-此时浏览器会显示一个Whitelabel Error Page页面，这个页面会显示异常相关的简单信息。如下所示，可以看到500的响应码，请求的url，请求的时间，以及异常信息。![](/assets/default-exception-white-page.png)
+此时浏览器会显示一个Whitelabel Error Page页面，这个页面会显示异常相关的简单信息。如下所示，可以看到500的响应码，请求的url，请求的时间，以及异常信息。![](/assets/default-exception-white-page.png)使用App访问，当前App和服务器交互一般使用json格式，如下所示：异常json
 
 
 
