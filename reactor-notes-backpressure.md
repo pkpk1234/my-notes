@@ -204,5 +204,51 @@ public class HotStreamByProcessor {
 
 可选的策略有buffer、error 、drop和latest，默认策略为buffer。可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
 
- 
+例子如下：
+
+```java
+public class BackpressureOnBackpressureError {
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        UnicastProcessor<String> hotSource = UnicastProcessor.create();
+        Flux<String> hotFlux = hotSource
+                .publish()
+                .autoConnect()
+                .onBackpressureError();
+
+        CompletableFuture future = CompletableFuture.runAsync(() -> {
+            IntStream.range(0, 50).parallel().forEach(
+                    value -> {
+                        threadPool.submit(() -> hotSource.onNext("value is " + value));
+                    }
+            );
+        });
+        System.out.println("future run");
+
+        hotFlux.subscribe(new BaseSubscriber<String>() {
+            @Override
+            protected void hookOnSubscribe(Subscription subscription) {
+                request(1);
+            }
+
+            @Override
+            protected void hookOnNext(String value) {
+                System.out.println("get value " + value);
+            }
+
+            @Override
+            protected void hookOnError(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        });
+        Thread.sleep(500);
+        System.out.println("shutdown");
+        threadPool.shutdownNow();
+    }
+}
+```
+
+执行结果如下：
+
+
 
