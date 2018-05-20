@@ -157,5 +157,42 @@ public class ConvertCold2Hot {
 
 ##### 使用Processor构造Hot流
 
+使用Processor的publish方法即可构造出一个Hot Stream，调用同一个Processor实例的onNext方法即可为之前构造的Hot Stream提供数据。如下例子：
+
+```java
+public class HotStreamByProcessor {
+    public static void main(String[] args) throws InterruptedException {
+        //使用Reactor提供的Processor工具类
+        UnicastProcessor<String> hotSource = UnicastProcessor.create();
+        //构造Hot Stream，同时配置为autoConnect，避免每加入一个Subscriber都需要调用一次connect方法
+        Flux<String> hotFlux = hotSource
+                .publish()
+                .autoConnect();
+
+        //异步为Hot Stream提供数据
+        CompletableFuture future = CompletableFuture.runAsync(() -> {
+            IntStream.range(0, 10).forEach(
+                    value -> {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //调用Processor的onNext即可以为Processor关联的Hot Stream提供数据
+                        hotSource.onNext("value is " + value);
+                    }
+            );
+        });
+
+        hotFlux.subscribe(s -> System.out.println("subsciber1: " + s));
+        Thread.sleep(500);
+        hotFlux.subscribe(s -> System.out.println("subsciber2: " + s));
+        //提供完数据之后，调用Processor的onComplete关闭Hot Stream
+        future.thenRun(() -> hotSource.onComplete());
+        future.join();
+    }
+}
+```
+
 
 
