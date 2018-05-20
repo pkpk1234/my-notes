@@ -202,7 +202,7 @@ public class HotStreamByProcessor {
 
 背压策略指的是当Subscriber无法及时request更多数据时，Publisher采取的措施。
 
+可选的策略有buffer、error 、drop和latest，默认策略为buffer。可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
 
-
-
+ 
 
