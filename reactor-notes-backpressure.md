@@ -198,5 +198,11 @@ public class HotStreamByProcessor {
 
 ![](/assets/HotStreamByProcessor.png)
 
+### 背压策略
+
+背压策略指的是当Subscriber无法及时request更多数据时，Publisher采取的措施。
+
+
+
 
 
