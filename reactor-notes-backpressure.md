@@ -124,6 +124,8 @@ public class MyLimitedSubscriber<T> extends BaseSubscriber<T> {
 
 可以通过onBackPressureBuffer、onBackPressureError、onBackPressureDrop、onBackPressureLatest选择不同策略。
 
+##### onBackPressureBuffer
+
 例子如下：
 
 ```java
@@ -172,7 +174,7 @@ public class BackpressureOnBackpressureError {
 
 ![](/assets/BackpressureOnBackpressureError.png)
 
-##### 
+onBackPressureBuffer方法还可以指定缓存溢出策略，默认策略为BufferOverflowStrategy.ERROR效果即上面的例子。可选的策略还有DROP\_OLDEST丢弃最旧元素，DROP\_LATEST丢弃最新的元素。
 
 
 
