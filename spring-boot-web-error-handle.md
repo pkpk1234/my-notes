@@ -12,5 +12,11 @@
 
 ### 原理
 
-ErrorProperties中包含了属性path，默认值为/error 
+以Spring Boot2、Tomcat为例，Spring Boot的EmbeddedWebServerFactoryCustomizerAutoConfiguration自动配置类中配置了一个TomcatWebServerFactoryCustomizer类型的Bean。
+
+TomcatWebServerFactoryCustomizer是SpringBoot中专门定制Tomcat特性的工具类，customize方法中执行了customizeErrorReportValve\(properties.getError\(\), factory\)方法。
+
+![](/assets/EmbeddedWebServerFactoryCustomizerAutoConfiguration.png)
+
+ErrorProperties中包含了属性path，默认值为/error
 
