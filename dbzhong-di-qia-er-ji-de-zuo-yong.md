@@ -56,7 +56,6 @@ mysql> select * from t_group_roles;
 首先构造查询语句，select from t\_group,t\_group\_roles 即可使笛卡尔积构造出每个群组及其对应的默认启用规则，由于存在联合主键，排除掉t\_group\_roles的群组即可，SQL语句如下：
 
 ```SQL
-
 SELECT
   a.id,
   c.role_key,
@@ -78,5 +77,26 @@ WHERE NOT exists(SELECT 1
 
 此时只需要再构建一个insert语句即可：
 
+```SQL
+insert into  t_group_roles(group_id, role_key, is_open)
+SELECT
+  a.id,
+  c.role_key,
+  c.is_open
+FROM t_group a,
+  (SELECT DISTINCT
+     b.role_key,
+     b.is_open
+   FROM t_group_roles b
+   WHERE b.group_id = 1) c -- 获取角色启用规则
+WHERE NOT exists(SELECT 1
+                 FROM t_group_roles d
+                 WHERE d.group_id = a.id); -- 不进行重复插入
+```
 
+执行后的效果：select \* from t\_group\_roles;
+
+![](/assets/select-g-r-isopen-afterinsert.png)
+
+并且只要t\_group\_roles中group\_id等于1的数据不被删除，这个SQL就是正确的，可以在群组中新增了数据之后运行，为新增群组添加默认的角色启用规则（实际上不会这样使用，反正规则是写死的，为group表加个after的triger即可）。
 
