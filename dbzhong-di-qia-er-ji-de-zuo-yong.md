@@ -27,7 +27,7 @@ mysql> describe t_group_roles;
 
 t\_group\_roles中包含了群组id，角色key和是否启用的标识，群组id和角色key构成联合主键。
 
-测试人员插入了一条测试数据，根据业务规则每个群组对应的角色启用标识默认都是相同的，developer、admin和sl都为1，表示启用，其他角色默认不启用。如下：
+测试人员插入了一条测试数据，根据业务规则每个群组对应的角色启用标识默认都是相同的，developer、cie、admin和sl都为1，表示启用，其他角色默认不启用。如下：
 
 ```SQL
 mysql> select * from t_group_roles;
@@ -46,6 +46,37 @@ mysql> select * from t_group_roles;
 |        1 | sl        |       1 |
 +----------+-----------+---------+
 ```
+
+现在需要开发人员做的时，根据这个规则，将所有的group对应的数据都插入t\_group\_roles 表中。
+
+实现这个需求有多种方法，最容易想到的就是写Java代码或者存储过程，获取所有群组信息，然后根据角色启用规则构造SQL语句，insert到t\_group\_roles中。
+
+但是这个场景如果使用笛卡尔积，一个SQL就能实现。
+
+首先构造查询语句，select from t\_group,t\_group\_roles 即可使笛卡尔积构造出每个群组及其对应的默认启用规则，由于存在联合主键，排除掉t\_group\_roles的群组即可，SQL语句如下：
+
+```SQL
+
+SELECT
+  a.id,
+  c.role_key,
+  c.is_open
+FROM t_group a,
+  (SELECT
+     b.role_key,
+     b.is_open
+   FROM t_group_roles b
+   WHERE b.group_id = 1) c -- 获取角色启用规则
+WHERE NOT exists(SELECT 1
+                 FROM t_group_roles d
+                 WHERE d.group_id = a.id); -- 不进行重复插入
+```
+
+查询出的部分数据如下：可以看到，id为1的群组不会参与构建，因为这个群组已经包含在t\_group\_roles中了。
+
+![](/assets/select-g-r-is.png)
+
+此时只需要再构建一个insert语句即可：
 
 
 
