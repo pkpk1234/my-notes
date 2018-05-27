@@ -55,7 +55,7 @@ public class BufferOnHotStream {
 
 ## window
 
-window 返回
+window 拆分的元素会以Flux类型返回，而不像buffer以List类型返回，这样才能实现一旦有元素产生，立刻发送给Subscriber。
 
 ```java
 public class WindowOperator {
