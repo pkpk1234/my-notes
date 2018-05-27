@@ -117,5 +117,9 @@ public class WindowOperator {
 }
 ```
 
+执行效果如下：
 
+![](/assets/window.png)
+
+完整代码：https://github.com/pkpk1234/learn-reactor
 
