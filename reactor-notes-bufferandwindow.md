@@ -49,13 +49,73 @@ public class BufferOnHotStream {
 
 ![](/assets/hotBuffer.png)
 
-其他更多的buffer操作例子详见：https://github.com/pkpk1234/learn-reactor/blob/master/src/main/java/com/ljm/reactor/operators/BufferOnColdStream.java
+其他更多的buffer操作例子详见：[https://github.com/pkpk1234/learn-reactor/blob/master/src/main/java/com/ljm/reactor/operators/BufferOnColdStream.java](https://github.com/pkpk1234/learn-reactor/blob/master/src/main/java/com/ljm/reactor/operators/BufferOnColdStream.java)
 
 本质上没有区别，只是分割方式有些不同。
 
 ## window
 
+window 返回
 
+```java
+public class WindowOperator {
+    public static void main(String[] args) {
+        UnicastProcessor<String> hotSource = UnicastProcessor.create();
+        Flux<String> hotFlux = hotSource
+                .publish()
+                .autoConnect()
+                .onBackpressureBuffer(10);
+
+        CompletableFuture future = CompletableFuture.runAsync(() -> {
+            IntStream.range(0, 50).forEach(
+                    value -> {
+                        hotSource.onNext("value is " + value);
+                    }
+            );
+        });
+
+
+        hotFlux.window(5).subscribe(new BaseSubscriber<Flux<String>>() {
+            int windowIndex = 0;
+            int elementIndex = 0;
+
+            @Override
+            protected void hookOnSubscribe(Subscription subscription) {
+                request(20);
+            }
+
+            @Override
+            protected void hookOnNext(Flux<String> value) {
+                value.subscribe(new BaseSubscriber<String>() {
+                    @Override
+                    protected void hookOnSubscribe(Subscription subscription) {
+                        System.out.println(String.format("Start window %d", windowIndex));
+
+                        requestUnbounded();
+                    }
+
+                    @Override
+                    protected void hookOnNext(String value) {
+                        System.out.println(String.format("Element %d is %s", elementIndex, value));
+                        elementIndex++;
+                    }
+
+                    @Override
+                    protected void hookOnComplete() {
+                        System.out.println(String.format("Finish window %d", windowIndex));
+                        windowIndex++;
+                        elementIndex = 0;
+                    }
+                });
+
+
+            }
+        });
+        future.thenRun(() -> hotSource.onComplete());
+        future.join();
+    }
+}
+```
 
 
 
