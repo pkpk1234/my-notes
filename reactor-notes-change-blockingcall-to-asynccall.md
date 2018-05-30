@@ -1,8 +1,8 @@
-# Project Reactor学习--如何将阻塞调用改写为非阻塞调用
+# Project Reactor学习--如何将阻塞方法包装为非阻塞方法
 
 前面讲了Reactor基础功能如何使用，但是对实际应用没有多大价值，现在来讲一讲如何使用Reactor实现有意义的功能。
 
-
+Project Reactor作为一个Reactive库，作用就是将阻塞的方法包装为非阻塞的方法，并且为其添加诸如背压等额外的功能。
 
 
 
