@@ -16,7 +16,7 @@ Project Reactor作为一个Reactive库，作用就是将阻塞的方法包装为
 
 那么在阻塞的场景下，时间线应该是这样的：
 
-
+![](/assets/blocking-method-timeline.png)
 
 ### 使用Future和Comp
 
