@@ -20,6 +20,30 @@ Project Reactor作为一个Reactive库，作用就是将阻塞的方法包装为
 
 使用代码模拟：
 
+```java
+public class Caller {
+    public static void main(String[] args) {
+        blockingCall();
+    }
+
+    private static void blockingCall() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        System.out.println(EchoMethod.echoAfterTime("get user info", 50, TimeUnit.MILLISECONDS));
+        System.out.println(EchoMethod.echoAfterTime("get notices", 50, TimeUnit.MILLISECONDS));
+        System.out.println(EchoMethod.echoAfterTime("get todos", 100, TimeUnit.MILLISECONDS));
+        stopWatch.stop();
+        System.out.println("call methods costs " + stopWatch.getTime() + " mills");
+    }
+}
+```
+
+运行结果如下：
+
+![](/assets/blocking-call-cost-time.png)
+
+
+
 
 
 ### 使用Future和Comp
