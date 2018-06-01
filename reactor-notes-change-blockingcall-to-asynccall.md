@@ -42,9 +42,7 @@ public class Caller {
 
 ![](/assets/blocking-call-cost-time.png)
 
-
-
-
+如果将阻塞方法包装为非阻塞方法，时间线可以优化为如下：
 
 ### 使用Future和Comp
 
