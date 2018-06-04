@@ -41,6 +41,23 @@ public class Caller {
 }
 ```
 
+```java
+public class HomePageService {
+    public String getUserInfo() {
+        return EchoMethod.echoAfterTime("get user info", 50, TimeUnit.MILLISECONDS);
+    }
+
+    public String getNotice() {
+        return EchoMethod.echoAfterTime("get notices", 50, TimeUnit.MILLISECONDS);
+    }
+
+    public String getTodos(String userInfo) {
+        return EchoMethod.echoAfterTime("get todos", 100, TimeUnit.MILLISECONDS);
+    }
+
+}
+```
+
 运行结果如下：
 
 ![](/assets/blocking-call-cost-time.png)
