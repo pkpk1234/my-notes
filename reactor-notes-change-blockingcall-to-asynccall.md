@@ -58,6 +58,30 @@ public class HomePageService {
 }
 ```
 
+EchoMethod中使用TimeUtil.sleep进行阻塞模拟：
+
+```java
+public class EchoMethod {
+    /**
+     * 模拟阻塞方法
+     *
+     * @param str
+     * @param delay
+     * @param timeUnit
+     * @return
+     */
+    public static String echoAfterTime(String str, int delay, TimeUnit timeUnit) {
+        try {
+            timeUnit.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+}
+```
+
 运行结果如下：
 
 ![](/assets/blocking-call-cost-time.png)
