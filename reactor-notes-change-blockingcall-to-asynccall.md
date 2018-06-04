@@ -27,14 +27,17 @@ public class Caller {
     }
 
     private static void blockingCall() {
+        HomePageService homePageService = new HomePageService();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        System.out.println(HomePageService.getUserInfo());
-        System.out.println(HomePageService.getNotice());
-        System.out.println(HomePageService.getTodos());
+        String userInfo = homePageService.getUserInfo();
+        System.out.println(userInfo);
+        System.out.println(homePageService.getNotice());
+        System.out.println(homePageService.getTodos(userInfo));
         stopWatch.stop();
         System.out.println("call methods costs " + stopWatch.getTime() + " mills");
     }
+
 }
 ```
 
@@ -47,8 +50,6 @@ public class Caller {
 ![](/assets/async-methods-timeline.png)
 
 ### 使用Future和CompletableFuture包装
-
-
 
 ```java
 private static void futureCall() {
@@ -72,7 +73,7 @@ private static void futureCall() {
                 e.printStackTrace();
             }
         });
-        
+
         try {
             System.out.println(threadPool.submit(() -> HomePageService.getNotice()).get());
         } catch (InterruptedException e) {
