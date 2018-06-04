@@ -52,39 +52,7 @@ public class Caller {
 ### 使用Future和CompletableFuture包装
 
 ```java
-private static void futureCall() {
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        //异步获取用户信息
-        Future<String> userInfoFuture = threadPool.submit(() -> HomePageService.getUserInfo());
-        threadPool.submit(() -> {
-            String userInfo = null;
-            try {
-                //等待用户信息返回
-                userInfo = userInfoFuture.get();
-                //使用用户信息
-                System.out.println(userInfo);
-                //获取todo
-                System.out.println(HomePageService.getTodos(userInfo));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
 
-        try {
-            System.out.println(threadPool.submit(() -> HomePageService.getNotice()).get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        stopWatch.stop();
-        System.out.println("futureCall methods costs " + stopWatch.getTime() + " mills");
-        threadPool.shutdown();
-    }
 ```
 
 
