@@ -29,9 +29,9 @@ public class Caller {
     private static void blockingCall() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        System.out.println(EchoMethod.echoAfterTime("get user info", 50, TimeUnit.MILLISECONDS));
-        System.out.println(EchoMethod.echoAfterTime("get notices", 50, TimeUnit.MILLISECONDS));
-        System.out.println(EchoMethod.echoAfterTime("get todos", 100, TimeUnit.MILLISECONDS));
+        System.out.println(HomePageService.getUserInfo());
+        System.out.println(HomePageService.getNotice());
+        System.out.println(HomePageService.getTodos());
         stopWatch.stop();
         System.out.println("call methods costs " + stopWatch.getTime() + " mills");
     }
@@ -46,7 +46,9 @@ public class Caller {
 
 ![](/assets/async-methods-timeline.png)
 
-### 使用Future和Comp
+### 使用Future和CompletableFuture包装
+
+
 
 
 
