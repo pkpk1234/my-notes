@@ -197,3 +197,9 @@ private static void threadAndCallbackCall() {
 
 使用Thread和Callback的缺点：需要在代码中显示对线程或者线程池进行操作；如果依赖链很长，则可能出现回调地狱。
 
+### 使用CompletableFuture进行包装
+
+CompletableFuture是Java8新增的异步任务工具类，对Future进行了扩展，解决了Future只能阻塞获取结果，Future之间无法链式依赖调用，Future没有异常处理接口的缺点。CompletableFuture.supplyAsync\(\)可以将阻塞方法包装为异步，thenCompose\(\)则可以链式调用依赖的方法，将thenRun放置到最后，则相当于finallyCallback，exceptionally\(\)则可以设置异常处理器。
+
+
+
