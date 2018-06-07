@@ -90,7 +90,7 @@ public class EchoMethod {
 
 ![](/assets/async-methods-timeline.png)
 
-### 使用Future和CompletableFuture包装
+### 使用Thread和Callback包装
 
 ```java
 
