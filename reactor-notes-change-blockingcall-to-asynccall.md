@@ -155,34 +155,47 @@ public class HomePageServiceThreadsAndCallbackWrapper {
 调用方也需要进行相应修改，以适应异步特点。
 
 ```java
-private static void threadAndCallbackCall() throws ExecutionException, InterruptedException {
+private static void threadAndCallbackCall() {
+        //用于让调用者线程等待多个异步任务全部结束
         CountDownLatch ct = new CountDownLatch(3);
-
         HomePageService homePageService = new HomePageService();
         HomePageServiceThreadsAndCallbackWrapper homePageServiceFutureWrapper
                 = new HomePageServiceThreadsAndCallbackWrapper(homePageService);
+        //统一的finallyCallback
         Runnable finallyCallback = () -> {
             ct.countDown();
         };
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        //获取用户信息
         homePageServiceFutureWrapper.getUserInfoAsync(
                 (userInfo) -> {
                     System.out.println(userInfo);
+                    //由于获取todo依赖于用户信息，必须在此处调用
                     homePageServiceFutureWrapper.getTodos(userInfo,
                             (todos) -> {
                                 System.out.println(todos);
                             }, System.err::println, finallyCallback);
                 }, System.err::println, finallyCallback
         );
+        //获取notice
         homePageServiceFutureWrapper.getNoticeAsync(System.out::println, System.err::println, finallyCallback);
+        //等待异步操作全部结束并统计耗时
         ct.await();
         stopWatch.stop();
         System.out.println("thread and callbakc async call methods costs " + stopWatch.getTime() + " mills");
-
+        //退出JVM线程，触发HomePageServiceThreadsAndCallbackWrapper中线程池的shutdownHook
         System.exit(0);
     }
 ```
+
+注意异步任务之间如果有依赖，则需要在回调中进行调用，如此处todo依赖于用户信息。
+
+运行结果：可以看到异步调用的确比同步调用快不少。
+
+![](/assets/threadAndCallbackCall.png) 
+
+使用Thread和Callback的缺点：需要在代码中显示对线程或者线程池进行操作，如果依赖链很长，则可能出现回调地狱。
 
 
 
