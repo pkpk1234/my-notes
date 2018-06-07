@@ -201,5 +201,70 @@ private static void threadAndCallbackCall() {
 
 CompletableFuture是Java8新增的异步任务工具类，对Future进行了扩展，解决了Future只能阻塞获取结果，Future之间无法链式依赖调用，Future没有异常处理接口的缺点。CompletableFuture.supplyAsync\(\)可以将阻塞方法包装为异步，thenCompose\(\)则可以链式调用依赖的方法，将thenRun放置到最后，则相当于finallyCallback，exceptionally\(\)则可以设置异常处理器。
 
+```java
+public class HomePageSerivceCompletableFutureWrapper {
+    private final HomePageService homePageService;
+
+    public HomePageSerivceCompletableFutureWrapper(HomePageService homePageService) {
+        this.homePageService = homePageService;
+    }
+
+    CompletableFuture<String> getUserInfoAsync() {
+        return CompletableFuture.supplyAsync(this.homePageService::getUserInfo);
+    }
+
+    CompletableFuture<String> getNoticeAsync() {
+        return CompletableFuture.supplyAsync(this.homePageService::getNotice);
+    }
+
+    CompletableFuture<String> getTodosAsync(String userInfo) {
+        return CompletableFuture.supplyAsync(() -> this.homePageService.getTodos(userInfo));
+    }
+}
+```
+
+调用者：
+
+```java
+private static void completableFutureCall() throws InterruptedException {
+        //用于让调用者线程等待多个异步任务全部结束
+        CountDownLatch ct = new CountDownLatch(2);
+        HomePageService homePageService = new HomePageService();
+        HomePageSerivceCompletableFutureWrapper homePageSerivceCompletableFutureWrapper =
+                new HomePageSerivceCompletableFutureWrapper(homePageService);
+        //统一的finallyCallback
+        Runnable finallyCallback = () -> {
+            ct.countDown();
+        };
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        homePageSerivceCompletableFutureWrapper
+                .getUserInfoAsync()
+                //依赖调用
+                .thenCompose(userInfo -> {
+                    System.out.println(userInfo);
+                    return homePageSerivceCompletableFutureWrapper.getTodosAsync(userInfo);
+                  })
+                .thenAcceptAsync(System.out::println)
+                .thenRun(finallyCallback);
+
+        homePageSerivceCompletableFutureWrapper
+                .getNoticeAsync()
+                .thenAcceptAsync(System.out::println)
+                .thenRun(finallyCallback);
+        //等待异步操作全部结束并统计耗时
+        ct.await();
+        stopWatch.stop();
+        System.out.println("CompletableFuture async call methods costs " + stopWatch.getTime() + " mills");
+
+    }
+```
+
+可以明显看到代码简洁了不少。
+
+运行结果:
+
+![](/assets/completableFutureCall.png)
+
 
 
