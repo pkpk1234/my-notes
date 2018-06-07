@@ -92,8 +92,64 @@ public class EchoMethod {
 
 ### 使用Thread和Callback包装
 
-```java
+如下HomePageServiceThreadsAndCallbackWrapper使用ThreadPool异步执行任务，并且在任务成功完成，异常终止以及最终完成时，调用相应的Callback函数。
 
+```java
+public class HomePageServiceThreadsAndCallbackWrapper {
+
+    private final HomePageService homePageService;
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors()
+    );
+
+    public ThreadsAndCallbackWrapper(HomePageService homePageService) {
+        this.homePageService = homePageService;
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> threadPool.shutdownNow()));
+    }
+
+    void getUserInfoAsync(Consumer<String> sucessCallback, Consumer<Throwable> errorCallback, Runnable finallyCallback) {
+        threadPool.submit(() -> {
+            try {
+                String userInfo = this.homePageService.getUserInfo();
+                sucessCallback.accept(userInfo);
+            } catch (Throwable ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finallyCallback.run();
+            }
+
+        });
+    }
+
+    void getNoticeAsync(Consumer<String> sucessCallback, Consumer<Throwable> errorCallback, Runnable finallyCallback) {
+        threadPool.submit(() -> {
+            try {
+                String notice = this.homePageService.getNotice();
+                sucessCallback.accept(notice);
+            } catch (Throwable ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finallyCallback.run();
+            }
+
+        });
+    }
+
+    void getTodos(String userInfo, Consumer<String> sucessCallback, Consumer<Throwable> errorCallback, Runnable finallyCallback) {
+        threadPool.submit(() -> {
+            try {
+                String todos = this.homePageService.getTodos(userInfo);
+                sucessCallback.accept(todos);
+            } catch (Throwable ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finallyCallback.run();
+            }
+
+        });
+    }
+
+}
 ```
 
 
