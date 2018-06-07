@@ -193,9 +193,7 @@ private static void threadAndCallbackCall() {
 
 运行结果：可以看到异步调用的确比同步调用快不少。
 
-![](/assets/threadAndCallbackCall.png) 
+![](/assets/threadAndCallbackCall.png)
 
-使用Thread和Callback的缺点：需要在代码中显示对线程或者线程池进行操作，如果依赖链很长，则可能出现回调地狱。
-
-
+使用Thread和Callback的缺点：需要在代码中显示对线程或者线程池进行操作；如果依赖链很长，则可能出现回调地狱。
 
