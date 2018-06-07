@@ -152,5 +152,37 @@ public class HomePageServiceThreadsAndCallbackWrapper {
 }
 ```
 
+调用方也需要进行相应修改，以适应异步特点。
+
+```java
+private static void threadAndCallbackCall() throws ExecutionException, InterruptedException {
+        CountDownLatch ct = new CountDownLatch(3);
+
+        HomePageService homePageService = new HomePageService();
+        HomePageServiceThreadsAndCallbackWrapper homePageServiceFutureWrapper
+                = new HomePageServiceThreadsAndCallbackWrapper(homePageService);
+        Runnable finallyCallback = () -> {
+            ct.countDown();
+        };
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        homePageServiceFutureWrapper.getUserInfoAsync(
+                (userInfo) -> {
+                    System.out.println(userInfo);
+                    homePageServiceFutureWrapper.getTodos(userInfo,
+                            (todos) -> {
+                                System.out.println(todos);
+                            }, System.err::println, finallyCallback);
+                }, System.err::println, finallyCallback
+        );
+        homePageServiceFutureWrapper.getNoticeAsync(System.out::println, System.err::println, finallyCallback);
+        ct.await();
+        stopWatch.stop();
+        System.out.println("thread and callbakc async call methods costs " + stopWatch.getTime() + " mills");
+
+        System.exit(0);
+    }
+```
+
 
 
