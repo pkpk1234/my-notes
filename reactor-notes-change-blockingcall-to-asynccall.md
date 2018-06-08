@@ -268,9 +268,88 @@ private static void completableFutureCall() throws InterruptedException {
 
 ![](/assets/completableFutureCall.png)
 
-### 使用Flux进行包装
+### 使用Publisher进行包装
 
+在Project Reactor中，异步产生数据的方法都扩展自接口Publisher，官方提供的实现有Flux和Mono。这个例子里面，由于只返回单个数据，所以更好的方式是使用Mono。
 
+Mono.fromCallable可以包装有返回值的方法，配合subscribeOn可以包装为异步执行，而flatMap则可以将异步返回的值传递给依赖的方法中。
+
+```java
+public class HomePageServicePublisherWrapper {
+    private final HomePageService homePageService;
+    //线程池
+    private Scheduler executor = Schedulers.elastic();
+
+    public HomePageServicePublisherWrapper(HomePageService homePageService) {
+        this.homePageService = homePageService;
+    }
+
+    public Mono<String> getUserInfoAsync() {
+        return Mono
+                .fromCallable(this.homePageService::getUserInfo)
+                .subscribeOn(this.executor);
+    }
+
+    public Mono<String> getNoticeAsync() {
+        return Mono
+                .fromCallable(this.homePageService::getNotice)
+                .subscribeOn(this.executor);
+    }
+
+    public Mono<String> getTodosAsync(String userInfo) {
+        return Mono
+                .fromCallable(() -> this.homePageService.getTodos(userInfo))
+                .subscribeOn(this.executor);
+    }
+}
+```
+
+```java
+private static void publisherCall() throws InterruptedException {
+        //用于让调用者线程等待多个异步任务全部结束
+        CountDownLatch ct = new CountDownLatch(2);
+        //统一的finallyCallback
+        Runnable finallyCallback = () -> {
+            ct.countDown();
+        };
+        StopWatch stopWatch = new StopWatch();
+        HomePageService homePageService = new HomePageService();
+        HomePageServicePublisherWrapper homePageServicePublisherWrapper =
+                new HomePageServicePublisherWrapper(homePageService);
+        homePageServicePublisherWrapper
+                .getUserInfoAsync()
+                //由于初始化线程池很耗时，所以将stopWatch放置到此处
+                //真是系统中，线程池应该提前初始化，而不应该用于一次性的方法
+                .doOnSubscribe(subscription -> {
+                    stopWatch.start();
+                })
+                //消费userInfo
+                .doOnNext(System.out::println)
+                //调用依赖于userInfo的getTodos
+                .flatMap((userInfo) -> homePageServicePublisherWrapper.getTodosAsync(userInfo))
+                //消费todos
+                .doOnNext(System.out::println)
+                .doFinally(s -> finallyCallback.run())
+                .subscribe();
+
+        homePageServicePublisherWrapper
+                .getNoticeAsync()
+                .doOnNext(System.out::println)
+                .doFinally((s) -> {
+                    finallyCallback.run();
+                })
+                .subscribe();
+        ct.await();
+        stopWatch.stop();
+        System.out.println("Publisher async call methods costs " + stopWatch.getTime() + " mills");
+    }
+```
+
+运行结果:
+
+![](/assets/publisherCall.png)
+
+将返回单个值的方法包装为异步的套路，大致如上。下一节介绍下将返回多值的方法封装为异步的套路，比如封装JDBC查询。
 
 
 
