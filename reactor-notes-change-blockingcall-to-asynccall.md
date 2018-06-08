@@ -349,7 +349,9 @@ private static void publisherCall() throws InterruptedException {
 
 ![](/assets/publisherCall.png)
 
-将返回单个值的方法包装为异步的套路，大致如上。下一节介绍下将返回多值的方法封装为异步的套路，比如封装JDBC查询。
+将返回单个值的方法包装为异步的套路，大致如上。
 
+下一节介绍下将返回多值的方法封装为异步的套路（其实之前的Demo里面已经有大致框架，但是使用的是简单数据），比如封装JDBC查询。
 
+完整代码：https://github.com/pkpk1234/learn-reactor
 
