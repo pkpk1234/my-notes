@@ -268,3 +268,9 @@ private static void completableFutureCall() throws InterruptedException {
 
 ![](/assets/completableFutureCall.png)
 
+### 使用Flux进行包装
+
+
+
+
+
