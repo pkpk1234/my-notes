@@ -6,7 +6,7 @@ Project Reactor中的套路主要为Flux&lt;T&gt; create\(Consumer&lt;? super Fl
 
 例子：假设有书籍页面，左侧列出了所有的作者，中间主窗口列出了所有的书籍。数据全部来自数据库中，使用JDBC进行查询。
 
-使用传统的阻塞编程如下：
+### 使用传统的阻塞编程
 
 查询所有作者的DAO类：
 
@@ -123,6 +123,115 @@ public class BookPageService {
     }
 }
 ```
+
+虽然getAuthor s和getBooks没有依赖关系，但是还是必须顺序执行。
+
+### 使用Flux.create包装
+
+异步查询所有作者的DAO类：
+
+```java
+public class AuthorAsyncRepository {
+    private static final String SELECTALLBOOKS = "SELECT id ,name FROM AUTHOR";
+
+    public Flux<Author> getAllAuthorsAsync() {
+        Flux<Author> objectFlux = Flux.create(fluxSink -> {
+            Connection connection = null;
+            try {
+                connection = H2DataSource.getInstance().getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet allAthors = statement.executeQuery(SELECTALLBOOKS);
+                while (allAthors.next()) {
+                    int id = allAthors.getInt(1);
+                    String name = allAthors.getString(2);
+                    //推送数据
+                    fluxSink.next(new Author(id, name));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                //传播异常
+                fluxSink.error(e);
+            } finally {
+                try {
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //终止关闭
+                fluxSink.complete();
+            }
+        });
+        return objectFlux.subscribeOn(Schedulers.parallel(), false);
+    }
+}
+```
+
+同样的套路：
+
+```java
+public class BookAsyncRepository {
+    private static final String SELECTALLBOOKS = "SELECT id ,title,author_id FROM BOOK";
+
+    Flux<Book> getAllBooksAsync() {
+
+        Flux<Book> objectFlux = Flux.create(fluxSink -> {
+            Connection connection = null;
+            try {
+                connection = H2DataSource.getInstance().getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet allBooks = statement.executeQuery(SELECTALLBOOKS);
+                while (allBooks.next()) {
+                    int id = allBooks.getInt(1);
+                    String title = allBooks.getString(2);
+                    int author_id = allBooks.getInt(3);
+                    fluxSink.next(new Book(id, title, author_id));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fluxSink.error(e);
+            } finally {
+                try {
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                fluxSink.complete();
+            }
+        });
+        return objectFlux.subscribeOn(Schedulers.parallel(), false);
+    }
+}
+```
+
+调用者需要等待两个异步方法完成后再退出：
+
+```java
+    private static void getPageAsync() throws InterruptedException {
+        System.out.println("----------------start get page async----------------");
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        AuthorAsyncRepository authorAsyncRepository = new AuthorAsyncRepository();
+        Flux<Author> authorFlux = authorAsyncRepository
+                .getAllAuthorsAsync().doOnComplete(() -> countDownLatch.countDown());
+        authorFlux.subscribe(authorConsumer);
+
+        BookAsyncRepository bookAsyncRepository = new BookAsyncRepository();
+        Flux<Book> flux = bookAsyncRepository
+                .getAllBooksAsync().doOnComplete(() -> countDownLatch.countDown());
+        flux.subscribe(bookConsumer);
+        //等待异步方法都完成
+        countDownLatch.await();
+        stopWatch.stop();
+        System.out.println("getPage costs " + stopWatch.getTime() + " mills");
+    }
+```
+
+运行结果如下：可以发现异步方法明显更快完成。
 
 ![](/assets/BookPageService.png)
 
