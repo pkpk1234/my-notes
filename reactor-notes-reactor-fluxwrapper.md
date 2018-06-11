@@ -2,7 +2,127 @@
 
 上一节介绍了如何将返回单个值的阻塞方法包装为非阻塞方法的套路，现在来介绍一下如何将返回多个值的阻塞方法包装为非阻塞方法的套路。注意此处“返回多个值”指的是返回的值是一个数据流，比如一个List、Resultset，等包含多个元素的对象。
 
+Project Reactor中的套路主要为Flux&lt;T&gt; create\(Consumer&lt;? super FluxSink&lt;T&gt;&gt; emitter\)方法，当数据到来时，调用emitter.next将数据推送给Subscriber;当发生异常时，调用emitter.error传递异常;当数据结束时，调用emitter.complete结束流。
 
+例子：假设有书籍页面，左侧列出了所有的作者，中间主窗口列出了所有的书籍。数据全部来自数据库中，使用JDBC进行查询。
+
+使用传统的阻塞编程如下：
+
+查询所有作者的DAO类：
+
+```java
+public class AuthorRepository {
+    private static final String SELECTALLBOOKS = "SELECT id ,name FROM AUTHOR";
+
+    public List<Author> getAllAuthors() {
+        List<Author> result = new ArrayList<>(2);
+        Connection connection = null;
+        try {
+            connection = H2DataSource.getInstance().getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet allAthors = statement.executeQuery(SELECTALLBOOKS);
+            while (allAthors.next()) {
+                int id = allAthors.getInt(1);
+                String name = allAthors.getString(2);
+                result.add(new Author(id, name));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+}
+```
+
+查询所有数据的DAO类：
+
+```java
+public class BookRepository {
+
+    private static final String SELECTALLBOOKS = "SELECT id ,title,author_id FROM BOOK";
+
+    public List<Book> getAllBooks() {
+        List<Book> result = new ArrayList<>(10);
+        Connection connection = null;
+        try {
+            connection = H2DataSource.getInstance().getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet allBooks = statement.executeQuery(SELECTALLBOOKS);
+            while (allBooks.next()) {
+                int id = allBooks.getInt(1);
+                String title = allBooks.getString(2);
+                int author_id = allBooks.getInt(3);
+                result.add(new Book(id, title, author_id));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+}
+```
+
+调用者：
+
+```java
+public class BookPageService {
+
+    private static Consumer<Book> bookConsumer = book -> System.out.println("\t" + book);
+    private static Consumer<Author> authorConsumer = author -> System.out.println("\t" + author);
+
+    public static void main(String[] args) throws InterruptedException {
+        //初始化数据
+        H2DataSource.getInstance();
+        getPage();
+    }
+
+    private static void getPage() {
+        System.out.println("----------------start get page----------------");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        getAuthors();
+        getBooks(bookConsumer);
+        stopWatch.stop();
+        System.out.println("getPage costs " + stopWatch.getTime() + " mills");
+    }
+
+    private static void getAuthors() {
+        AuthorRepository authorRepository = new AuthorRepository();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        authorRepository.getAllAuthors().stream().forEach(authorConsumer);
+        stopWatch.stop();
+        System.out.println("\tgetAuthors costs " + stopWatch.getTime() + " mills");
+    }
+
+    private static void getBooks(Consumer<Book> consumer) {
+
+        BookRepository bookRepository = new BookRepository();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        bookRepository.getAllBooks().stream().forEach(bookConsumer);
+        stopWatch.stop();
+        System.out.println("\tgetBooks costs " + stopWatch.getTime() + " mills");
+    }
+}
+```
 
 ![](/assets/BookPageService.png)
 
