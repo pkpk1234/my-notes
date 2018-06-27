@@ -20,4 +20,5 @@
 * [Reactor-Notes-BufferAndWindow](reactor-notes-bufferandwindow.md)
 * [Reactor-Notes-Change-BlockingCall-TO-AsyncCall](reactor-notes-change-blockingcall-to-asynccall.md)
 * [Reactor-Notes-Reactor-FluxWrapper](reactor-notes-reactor-fluxwrapper.md)
+* [Eureka- problems](eureka-problems.md)
 
