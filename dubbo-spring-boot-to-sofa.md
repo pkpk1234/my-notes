@@ -1,10 +1,10 @@
-# dubbo-spring-boot迁移sofa蚂蚁金融云简要步骤
+# dubbo-spring-boot微服务迁移sofa框架和蚂蚁金融云简要步骤
 
 ## 修改服务提供者
 
 ### 修改POM
 
-将parent由dubbo-spring-boot-parent修改为sofaboot-enterprise-dependencies
+将parent由dubbo-spring-boot-parent修改为sofaboot-enterprise-dependencies，注意artifact中的enterprise，这个依赖才能上蚂蚁金融云，开源的不行。
 
 ```xml
      <parent>
@@ -149,7 +149,7 @@ spring.application.name=dubbo-user-role-service
 +com.antcloud.mw.secret=xxxxxxxx
 ```
 
-### 修改服务消费者
+## 修改服务消费者
 
 服务消费者首先按照上面的步骤进行修改，然后再修改服务引用方式。
 
@@ -169,7 +169,7 @@ spring.application.name=dubbo-user-role-service
 -    registry = "${dubbo.registry.id}")
  public class UserServiceImpl implements UserService {
    @Autowired private UserDAO userDAO;
- 
+
 -  @Reference(
 -          version = "${demo.service.version}",
 -          application = "${dubbo.application.id}",
@@ -179,7 +179,5 @@ spring.application.name=dubbo-user-role-service
 +  @Autowired private UserRoleService userRoleService;
 ```
 
-
-
-
+到此为止，dubbo-spring-boot即迁移到sofa下，并且可以部署到蚂蚁金融云上。
 
