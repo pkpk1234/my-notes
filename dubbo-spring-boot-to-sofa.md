@@ -1,4 +1,4 @@
-# dubbo-spring-boot迁移Sofa步骤
+# dubbo-spring-boot迁移sofa蚂蚁金融云简要步骤
 
 ## 修改POM
 
@@ -98,10 +98,55 @@
 ```xml
 +@ImportResource({"classpath*:META-INF/role-service/*.xml"})
 +@SpringBootApplication
-public class UserRoleServiceApp { ... 
+public class UserRoleServiceApp { ...
 ```
 
+### 修改application.properties
 
+将dubbo相关配置全部删除，修改为sofa对应的配置，注意最后蚂蚁中间件的配置，必须配置这几个参数微服务才能正常运行在蚂蚁金融云上。
+
+```xml
+# Spring boot application
+spring.application.name=dubbo-user-role-service
+
+-dubbo.application.id=dubbo-user-role-service
+-dubbo.application.name=dubbo-user-role-service
+-dubbo.application.qos.port=22223
+-dubbo.application.qos.enable=true
+-
+-dubbo.protocol.id=zookeeper
+-dubbo.protocol.name=dubbo
+-dubbo.protocol.port=20082
+-dubbo.protocol.status=server
+-
+-dubbo.registry.id=my-registry
+-dubbo.registry.address=localhost:2181
+-dubbo.registry.protocol=zookeeper
+-dubbo.registry.timeout=30000
+-dubbo.protocol.threads=10
+-
+-management.endpoint.dubbo.enabled=true
+-management.endpoint.dubbo-shutdown.enabled=true
+-management.endpoint.dubbo-configs.enabled=true
+-management.endpoint.dubbo-services.enabled=true
+-management.endpoint.dubbo-references.enabled=true
+-management.endpoint.dubbo-properties.enabled=true
+-management.health.dubbo.status.defaults=memory
+-management.health.dubbo.status.extras=load,threadpool
+-
++
++logging.level.xxx.xxx.xxx=INFO
++
++logging.path=./logs
++
++run.mode=NORMAL
++com.alipay.env=shared
++com.alipay.instanceid=xxxxxx
++com.antcloud.antvip.endpoint=xxx.xxx.xxx.xxx
++com.antcloud.mw.access=xxxxxxxx
++com.antcloud.mw.secret=xxxxxxxx
+
+```
 
 
 
