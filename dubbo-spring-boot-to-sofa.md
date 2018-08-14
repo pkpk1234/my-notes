@@ -69,5 +69,9 @@
  public class UserRoleServiceImpl implements UserRoleService {...
 ```
 
+### 新建META-INF.&lt;service-name&gt;目录和service-name.xml文件
+
+
+
 
 
