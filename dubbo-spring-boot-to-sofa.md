@@ -26,13 +26,7 @@
 +            <groupId>com.alipay.sofa</groupId>
 +            <artifactId>rpc-enterprise-sofa-boot-starter</artifactId>
          </dependency>
- 
-         <dependency>
-             <groupId>org.springframework.boot</groupId>
--            <artifactId>spring-boot-starter-actuator</artifactId>
-+            <artifactId>spring-boot-starter-logging</artifactId>
-         </dependency>
- 
+
          <dependency>
 -            <groupId>${project.groupId}</groupId>
 -            <artifactId>dubbo-spring-boot-starter</artifactId>
@@ -40,15 +34,17 @@
 +            <groupId>org.springframework</groupId>
 +            <artifactId>spring-core</artifactId>
 +        </dependency>
+
 +        <dependency>
 +            <groupId>org.springframework</groupId>
 +            <artifactId>spring-context</artifactId>
 +        </dependency>
+
 +        <dependency>
 +            <groupId>org.springframework.boot</groupId>
 +            <artifactId>spring-boot-starter-logging</artifactId>
          </dependency>
- 
+
          <dependency>
 -            <groupId>com.alibaba.boot</groupId>
 -            <artifactId>dubbo-spring-boot-actuator</artifactId>
@@ -56,12 +52,7 @@
 +            <groupId>org.springframework.boot</groupId>
 +            <artifactId>spring-boot-starter-actuator</artifactId>
          </dependency>
-
 ```
-
-
-
-
 
 
 
