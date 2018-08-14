@@ -4,7 +4,7 @@
 
 ### 修改POM
 
-将parent由dubbo-spring-boot-parent修改为sofaboot-enterprise-dependencies，注意artifact中的enterprise，这个依赖才能上蚂蚁金融云，开源的不行。
+将parent由dubbo-spring-boot-parent修改为sofaboot-enterprise-dependencies，注意artifact中的enterprise，这个依赖才能上蚂蚁金融云，开源的sofaboot上不了。
 
 ```xml
      <parent>
