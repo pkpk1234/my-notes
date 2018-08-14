@@ -93,5 +93,17 @@
 </beans>
 ```
 
+### 修改spring-boot启动类，import上一步编写的xml
+
+```xml
++@ImportResource({"classpath*:META-INF/role-service/*.xml"})
++@SpringBootApplication
+public class UserRoleServiceApp { ... 
+```
+
+
+
+
+
 
 
