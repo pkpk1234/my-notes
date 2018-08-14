@@ -54,7 +54,7 @@
          </dependency>
 ```
 
-### 修改服务实现，去掉dubbo-spring-boot注解  
+### 修改服务实现，去掉dubbo-spring-boot注解
 
 ```java
 -import com.alibaba.boot.dubbo.demo.consumer.model.User;
@@ -66,14 +66,8 @@
 -    protocol = "${dubbo.protocol.id}",
 -    registry = "${dubbo.registry.id}")
 +
- public class UserRoleServiceImpl implements UserRoleService
+ public class UserRoleServiceImpl implements UserRoleService {...
 ```
-
-
-
-
-
-
 
 
 
