@@ -15,7 +15,7 @@
      </parent>
 ```
 
-替换dependencies中的依赖
+替换dependencies中对dubbo-spring-boot-starter的依赖为rpc-enterprise-sofa-boot-starter，再根据需要引入spring-boot相关的starter依赖
 
 ```xml
 -        <!-- Spring Boot dependencies -->
