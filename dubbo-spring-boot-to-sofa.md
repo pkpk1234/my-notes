@@ -71,6 +71,28 @@
 
 ### 新建META-INF.&lt;service-name&gt;目录和service-name.xml文件
 
+![](/assets/sofa-service.xml.png)
+
+在role-service.xml中配置服务发布
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://schema.alipay.com/sofa/schema/slite http://schema.alipay.com/sofa/slite.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="roleService" class="com.alibaba.boot.dubbo.demo.provider.service.UserRoleServiceImpl"/>
+
+    <!-- Publish bolt service -->
+    <sofa:service interface="com.alibaba.boot.dubbo.demo.consumer.UserRoleService" ref="roleService">
+        <sofa:binding.bolt/>
+    </sofa:service>
+</beans>
+```
+
 
 
 
