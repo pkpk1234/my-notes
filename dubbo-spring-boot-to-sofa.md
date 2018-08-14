@@ -1,6 +1,8 @@
 # dubbo-spring-boot迁移sofa蚂蚁金融云简要步骤
 
-## 修改POM
+## 修改服务提供者
+
+### 修改POM
 
 将parent由dubbo-spring-boot-parent修改为sofaboot-enterprise-dependencies
 
@@ -145,7 +147,36 @@ spring.application.name=dubbo-user-role-service
 +com.antcloud.antvip.endpoint=xxx.xxx.xxx.xxx
 +com.antcloud.mw.access=xxxxxxxx
 +com.antcloud.mw.secret=xxxxxxxx
+```
 
+### 修改服务消费者
+
+服务消费者首先按照上面的步骤进行修改，然后再修改服务引用方式。
+
+```xml
+    <sofa:reference interface="com.alibaba.boot.dubbo.demo.consumer.UserRoleService" id="userRoleService">
+        <sofa:binding.bolt>
+            <sofa:global-attrs timeout="15000"/>
+        </sofa:binding.bolt>
+    </sofa:reference>
+```
+
+```java
+-@Service(
+-    version = "${demo.service.version}",
+-    application = "${dubbo.application.id}",
+-    protocol = "${dubbo.protocol.id}",
+-    registry = "${dubbo.registry.id}")
+ public class UserServiceImpl implements UserService {
+   @Autowired private UserDAO userDAO;
+ 
+-  @Reference(
+-          version = "${demo.service.version}",
+-          application = "${dubbo.application.id}",
+-          registry = "${dubbo.registry.id}")
+-  private UserRoleService userRoleService;
+-
++  @Autowired private UserRoleService userRoleService;
 ```
 
 
