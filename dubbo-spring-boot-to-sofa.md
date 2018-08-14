@@ -73,7 +73,7 @@
 
 ![](/assets/sofa-service.xml.png)
 
-在role-service.xml中配置服务发布
+在role-service.xml中配置服务发布:
 
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -92,8 +92,6 @@
     </sofa:service>
 </beans>
 ```
-
-
 
 
 
